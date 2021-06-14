@@ -17,7 +17,7 @@ from .views.raw_views_classes import (
 
 urlpatterns = [
     path('', TaskListRawView.as_view(), name='index'),
-    path('add/', TaskCreateRawView.as_view(), name='create'),
+    path('create/', TaskCreateRawView.as_view(), name='create'),
     path('update/<int:id>/', TaskUpdateRawView.as_view(), name='update'),
     path('delete/<int:id>/', TaskDeleteRawView.as_view(), name='delete'),
     path('detail/<int:id>/', TaskDetailRawView.as_view(), name='detail')    

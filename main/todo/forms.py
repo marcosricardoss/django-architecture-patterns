@@ -35,11 +35,16 @@ class TaskForm(forms.ModelForm):
                 "placeholder": "The Task Description"
             }
         )
-    )
+    )    
+
     deadline_at = forms.DateTimeField(        
-        label='Deadline',
-        # TODO: Use the django timezone
-        widget=forms.DateInput()
+        input_formats=['%Y-%m-%dT%H:%M'], # format of datetime-local: yyyy-MM-ddThh:mm
+        label='Deadline',        
+        widget=forms.DateTimeInput(            
+            attrs={
+                "type": "datetime-local",                                
+            },            
+        )
     )
 
     def clean_deadline_at(self, *args, **kwargs):
@@ -73,9 +78,13 @@ class RawTaskForm(forms.Form):
         )
     )
     deadline_at = forms.DateTimeField(        
-        label='Deadline',
-        # TODO: Use the django timezone
-        widget=forms.DateInput()
+        input_formats=['%Y-%m-%dT%H:%M'], # format of datetime-local: yyyy-MM-ddThh:mm
+        label='Deadline',        
+        widget=forms.DateTimeInput(            
+            attrs={
+                "type": "datetime-local",                                
+            },            
+        )
     )
 
     def clean_deadline_at(self, *args, **kwargs):
