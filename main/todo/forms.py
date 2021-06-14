@@ -43,7 +43,8 @@ class TaskForm(forms.ModelForm):
         widget=forms.DateTimeInput(            
             attrs={
                 "type": "datetime-local",                                
-            },            
+            },         
+            format='%Y-%m-%dT%H:%M'   
         )
     )
 
@@ -83,7 +84,8 @@ class RawTaskForm(forms.Form):
         widget=forms.DateTimeInput(            
             attrs={
                 "type": "datetime-local",                                
-            },            
+            },
+            format='%Y-%m-%dT%H:%M'
         )
     )
 
