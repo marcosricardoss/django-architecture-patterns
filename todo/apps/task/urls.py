@@ -1,7 +1,7 @@
 from django.urls import path
 
 
-app_name = 'todo'
+app_name = 'task'
 
 #########################################################
 # Raw views

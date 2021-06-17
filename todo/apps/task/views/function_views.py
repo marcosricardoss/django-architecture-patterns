@@ -16,7 +16,7 @@ def list_view(request, *args, **kwargs):
     view_context = {
         "object_list": [task for task in Task.objects.all()]
     }
-    return render(request, "todo/task_list.html", view_context)
+    return render(request, "task/task_list.html", view_context)
 
 def create_view(request, *args, **kwargs):
     """ Using built-in django form """
@@ -24,12 +24,12 @@ def create_view(request, *args, **kwargs):
     form = TaskForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return HttpResponseRedirect(reverse('todo:index'))
+        return HttpResponseRedirect(reverse('task:index'))
 
     view_context = {
         "form": form
     }
-    return render(request, "todo/task_create.html", view_context)
+    return render(request, "task/task_create.html", view_context)
 
 
 def create_view_raw(request, *args, **kwargs):
@@ -39,7 +39,7 @@ def create_view_raw(request, *args, **kwargs):
         form = RawTaskForm(request.POST)
         if form.is_valid():            
             Task.objects.create(**form.cleaned_data)
-            return HttpResponseRedirect(reverse('todo:index'))
+            return HttpResponseRedirect(reverse('task:index'))
         else:
             print(form.errors)
     elif request.method == 'GET':
@@ -47,7 +47,7 @@ def create_view_raw(request, *args, **kwargs):
         view_context = {
             "form": form
         }
-        return render(request, "todo/task_create.html", view_context)
+        return render(request, "task/task_create.html", view_context)
 
     Http404()
 
@@ -79,7 +79,7 @@ def update_view(request, id, *args, **kwargs):
         view_context = {
             "form": form
         }
-        return render(request, "todo/task_create.html", view_context)
+        return render(request, "task/task_create.html", view_context)
 
     Http404()
 
@@ -103,13 +103,13 @@ def delete_view(request, id, *args, **kwargs):
 
     if request.method == "POST":
         obj.delete()
-        print(reverse('todo:index'))
-        return HttpResponseRedirect(reverse('todo:index'))        
+        print(reverse('task:index'))
+        return HttpResponseRedirect(reverse('task:index'))        
     elif request.method == "GET":
         view_context = {
             "object": obj
         }
-        return render(request, "todo/task_delete.html", view_context)
+        return render(request, "task/task_delete.html", view_context)
 
     Http404()    
 
@@ -134,6 +134,6 @@ def detail_view(request, id, *args, **kwargs):
     view_context = {
         "object": obj
     }
-    return render(request, "todo/task_detail.html", view_context)
+    return render(request, "task/task_detail.html", view_context)
 
     

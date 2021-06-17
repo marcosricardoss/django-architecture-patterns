@@ -24,7 +24,7 @@ class TaskObjectMixin(object):
 
 
 class TaskListRawView(View):
-    template_name = "todo/task_list.html"
+    template_name = "task/task_list.html"
     queryset = Task.objects.all()
 
     def get_queryset(self):
@@ -38,7 +38,7 @@ class TaskListRawView(View):
 
 
 class TaskCreateRawView(View):
-    template_name = "todo/task_create.html" # DetailView
+    template_name = "task/task_create.html" # DetailView
     def get(self, request, *args, **kwargs):
         # GET method
         form = TaskForm()
@@ -50,13 +50,13 @@ class TaskCreateRawView(View):
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse("todo:index"))
+            return HttpResponseRedirect(reverse("task:index"))
         context = {"form": form}
         return render(request, self.template_name, context)
 
 
 class TaskUpdateRawView(TaskObjectMixin, View):
-    template_name = "todo/task_create.html" # DetailView
+    template_name = "task/task_create.html" # DetailView
     def get(self, request, id=None, *args, **kwargs):
         # GET method
         context = {}
@@ -75,11 +75,11 @@ class TaskUpdateRawView(TaskObjectMixin, View):
             form = TaskForm(request.POST, instance=obj)
             if form.is_valid():
                 form.save()            
-            return HttpResponseRedirect(reverse("todo:detail", kwargs={"id": obj.id}))        
+            return HttpResponseRedirect(reverse("task:detail", kwargs={"id": obj.id}))        
 
 
 class TaskDeleteRawView(TaskObjectMixin, View):
-    template_name = "todo/task_delete.html" # DetailView
+    template_name = "task/task_delete.html" # DetailView
     def get(self, request, id=None, *args, **kwargs):
         # GET method
         context = {}
@@ -94,12 +94,12 @@ class TaskDeleteRawView(TaskObjectMixin, View):
         obj = self.get_object()
         if obj is not None:
             obj.delete()            
-            return  HttpResponseRedirect(reverse('todo:index'))
+            return  HttpResponseRedirect(reverse('task:index'))
         return render(request, self.template_name, context)
 
 
 class TaskDetailRawView(TaskObjectMixin, View):
-    template_name = "todo/task_detail.html" # DetailView    
+    template_name = "task/task_detail.html" # DetailView    
     def get(self, request, id=None, *args, **kwargs):
         # GET method
         view_context = {            

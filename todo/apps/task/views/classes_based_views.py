@@ -21,14 +21,14 @@ from ..models import Task
 class TaskListView(ListView):
     """ ListView """
 
-    template_name = "todo/task_list.html"
+    template_name = "task/task_list.html"
     queryset = Task.objects.all()
 
 
 class TaskCreateView(CreateView):
     """ CreateView """
 
-    template_name = "todo/task_create.html"
+    template_name = "task/task_create.html"
     form_class = TaskForm
     queryset = Task.objects.all()
 
@@ -47,13 +47,13 @@ class TaskCreateView(CreateView):
         Another way to change the success url. If there's a
         get_absolute_url() method in the model this will be ignored.
         """    
-        return reverse('todo:index')        
+        return reverse('task:index')        
 
 
 class TaskUpdateView(UpdateView):
     """ UpdateView """
 
-    template_name = "todo/task_create.html"
+    template_name = "task/task_create.html"
     form_class = TaskForm        
 
     def form_valid(self, form):
@@ -76,7 +76,7 @@ class TaskUpdateView(UpdateView):
 class TaskDeleteView(DeleteView):
     """ DeleteView """
 
-    template_name = "todo/task_delete.html"
+    template_name = "task/task_delete.html"
 
     def get_object(self):
         """ 
@@ -89,13 +89,13 @@ class TaskDeleteView(DeleteView):
         return get_object_or_404(Task, id=_id)        
 
     def get_success_url(self):
-        return reverse('todo:index')
+        return reverse('task:index')
         
 
 class TaskDetailView(DetailView):
     """ DetailView """
 
-    template_name = "todo/task_detail.html"    
+    template_name = "task/task_detail.html"    
 
     def get_object(self):
         """ 

@@ -1,0 +1,67 @@
+version: '3'
+services:
+  # PROXY
+  projec-proxy:
+    container_name: todo-proxy
+    restart: always
+    image: "jwilder/nginx-proxy:latest"
+    ports:
+      - "${PROXY_SERVICE_PORT}:80"
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+    logging:
+      driver: none
+  
+  # MEDIA SERVER
+  projec-media:
+    container_name: projec-media
+    image: 'httpd:latest'
+    volumes:
+      - './media:/usr/local/apache2/htdocs'
+    ports:
+      - '${MEDIA_SERVICE_PORT}:80'
+    logging:
+      driver: none
+    environment:
+      - 'VIRTUAL_HOST=${MEDIA_SERVICE_HOST}.${DOMAIN}'  
+
+  # TODO STATIC SERVER       
+  todo-static:
+    container_name: todo-static
+    image: 'httpd:latest'
+    volumes:
+      - './todo/static:/usr/local/apache2/htdocs'
+    ports:
+      - '80'
+    logging:
+      driver: none
+    environment:
+      - 'VIRTUAL_HOST=${TODO_SERVICE_STATIC_HOST}.${DOMAIN}'
+  
+  # TODO APP
+  todo-app:
+    container_name: todo-app
+    build:
+      context: ./todo
+      args:
+        BUILD_ENV: $ENV
+    command:  bash -c "/usr/src/app/start"
+    volumes:
+      - './media:/usr/src/app/media'
+      - './todo/data:/usr/src/app/data'
+      - './todo/main:/usr/src/app/main'
+      - './todo/site_static:/usr/src/app/site_static'
+      - './todo/static:/usr/src/app/static'
+      - './todo/templates:/usr/src/app/templates'      
+      - './todo/apps/task:/usr/src/app/task'   
+    ports:
+      - '$TODO_SERVICE_SERVICE_PORT:8000'    
+    environment:
+      DJANGO_USE_DEBUG: $TODO_DJANGO_USE_DEBUG
+      DJANGO_USE_DEBUG_TOOLBAR: $TODO_DJANGO_USE_DEBUG_TOOLBAR      
+      MEDIA_HOST: "${MEDIA_SERVICE_HOST}.${DOMAIN}"       
+      SECRET_KEY: $SECRET_KEY
+      SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"      
+      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"
+      VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
+      VIRTUAL_PORT: 8000

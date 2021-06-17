@@ -4,7 +4,7 @@
         <form action='.' method='POST'>
             {% csrf_token %}
             <h1>Do you want to delete the post "{{ object.title }}"?</h1>
-            <p><input type='submit' value='Yes' />  <a href="{% url 'todo:index' %}">Cancel</a></p>
+            <p><input type='submit' value='Yes' />  <a href="{% url 'task:index' %}">Cancel</a></p>
         
         </form>
     </main>       

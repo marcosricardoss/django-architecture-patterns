@@ -7,8 +7,8 @@
                 {{ forloop.counter }} - {{task.title}}
                 <br>                
                 <a href="{{ task.get_absolute_url }}">View</a>
-                <a href="{% url 'todo:update' id=task.id %}">Update</a>
-                <a href="{% url 'todo:delete' id=task.id %}">Delete</a>            
+                <a href="{% url 'task:update' id=task.id %}">Update</a>
+                <a href="{% url 'task:delete' id=task.id %}">Delete</a>            
                 <br><br>
             </li>
             {% endfor %}
