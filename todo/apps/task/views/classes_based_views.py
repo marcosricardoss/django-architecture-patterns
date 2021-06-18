@@ -20,7 +20,7 @@ from ..models import Task
 
 class TaskListView(ListView):
     """ ListView """
-
+    
     template_name = "task/task_list.html"
     queryset = Task.objects.all()
 

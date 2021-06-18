@@ -3,8 +3,8 @@ services:
   # PROXY
   projec-proxy:
     container_name: todo-proxy
-    restart: always
     image: "jwilder/nginx-proxy:latest"
+    restart: always
     ports:
       - "${PROXY_SERVICE_PORT}:80"
     volumes:
@@ -16,6 +16,7 @@ services:
   projec-media:
     container_name: projec-media
     image: 'httpd:latest'
+    restart: always
     volumes:
       - './media:/usr/local/apache2/htdocs'
     ports:
@@ -25,10 +26,45 @@ services:
     environment:
       - 'VIRTUAL_HOST=${MEDIA_SERVICE_HOST}.${DOMAIN}'  
 
+    # PDADMIN 
+  project-pgadmin:
+    image: project-pgadmin:latest
+    container_name: project-pgadmin
+    restart: always
+    build:
+      context: ./pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
+      PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
+    ports:
+      - "${PGADMIN_DEFAULT_PORT}:80"
+    logging:
+      driver: none    
+    depends_on:      
+      - todo-postgres
+  
+  # TODO POSTGRE DATABASE
+  todo-postgres:
+    image: postgres:latest
+    container_name: todo-postgres
+    restart: always
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: $TODO_POSTGRES_SERVICE_DATABASE_NAME
+      POSTGRES_USER: $TODO_POSTGRES_SERVICE_USER
+      POSTGRES_PASSWORD: $TODO_POSTGRES_SERVICE_PASSWORD
+    logging:
+      driver: none
+    ports:
+      - "${TODO_POSTGRES_SERVICE_PORT}:5432"
+    volumes:
+      - todo:/var/lib/postgresql/data
+
   # TODO STATIC SERVER       
   todo-static:
     container_name: todo-static
     image: 'httpd:latest'
+    restart: always
     volumes:
       - './todo/static:/usr/local/apache2/htdocs'
     ports:
@@ -45,7 +81,10 @@ services:
       context: ./todo
       args:
         BUILD_ENV: $ENV
-    command:  bash -c "/usr/src/app/start"
+    restart: always
+    command: > 
+      bash -c "/usr/src/app/wait-for-it todo-postgres:5432 
+      && /usr/src/app/start"
     volumes:
       - './media:/usr/src/app/media'
       - './todo/data:/usr/src/app/data'
@@ -60,8 +99,16 @@ services:
       DJANGO_USE_DEBUG: $TODO_DJANGO_USE_DEBUG
       DJANGO_USE_DEBUG_TOOLBAR: $TODO_DJANGO_USE_DEBUG_TOOLBAR      
       MEDIA_HOST: "${MEDIA_SERVICE_HOST}.${DOMAIN}"       
+      POSTGRESQL_DATABASE: $TODO_POSTGRES_SERVICE_DATABASE_NAME
+      POSTGRESQL_HOST: "todo-postgres"
+      POSTGRESQL_PASSWORD: $TODO_POSTGRES_SERVICE_PASSWORD
+      POSTGRESQL_PORT: $TODO_POSTGRES_SERVICE_PORT
+      POSTGRESQL_USER: $TODO_POSTGRES_SERVICE_USER
       SECRET_KEY: $SECRET_KEY
       SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"      
       STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"
       VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       VIRTUAL_PORT: 8000
+  
+volumes:    
+  todo:         

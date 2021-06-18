@@ -36,8 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'task'
+    'django.contrib.staticfiles',    
+    'task.apps.TaskConfig'
 ]
 if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'):
     INSTALLED_APPS += ['debug_toolbar']
@@ -85,6 +85,55 @@ DATABASES = {
     }
 }
 
+if os.environ.get('POSTGRESQL_HOST'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get("POSTGRESQL_DATABASE"),
+            'USER': os.environ.get("POSTGRESQL_USER"),
+            'PASSWORD': os.environ.get("POSTGRESQL_PASSWORD"),
+            'HOST': os.environ.get("POSTGRESQL_HOST"),
+            'PORT': os.environ.get("POSTGRESQL_PORT"),
+        }
+    }
+
+# Logging
+# https://docs.djangoproject.com/en/dev/topics/logging/
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/app.log',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    }
+}
+if DEBUG:
+    # make all loggers use the console.
+    for logger in LOGGING['loggers']:
+        LOGGING['loggers'][logger]['handlers'] = ['console']
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
