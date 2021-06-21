@@ -26,7 +26,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get('DJANGO_USE_DEBUG') else False
 
-ALLOWED_HOSTS = ['localhost', os.environ.get('SITE_HOST')] if os.environ.get('SITE_HOST') else ['localhost']
+ALLOWED_HOSTS = ['localhost',
+                 os.environ.get('SITE_HOST')] if os.environ.get('SITE_HOST') else ['localhost']
 
 # Application definition
 
@@ -36,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',    
+    'django.contrib.staticfiles',
+    'utils.apps.UtilsConfig',
     'task.apps.TaskConfig'
 ]
 if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'):
@@ -167,20 +169,22 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+# Static server for deployment with Nginx
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'site_static'),
-]
 if os.environ.get('STATIC_HOST'):
     STATIC_DOMAIN = os.environ.get('STATIC_HOST')
     STATIC_URL = f'http://{STATIC_DOMAIN}/'
 
 MEDIA_URL = '/media/'
+# Media server for deployment with Nginx
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 if os.environ.get('MEDIA_HOST'):
     MEDIA_DOMAIN = os.environ.get('MEDIA_HOST')
