@@ -1,17 +1,23 @@
 {% extends 'base.html' %}
-{% block content %}        
-     <main>
-        <ul>
-            {% for task in object_list %}
-            <li>
-                {{ forloop.counter }} - {{task.title}}
-                <br>                
-                <a href="{{ task.get_absolute_url }}">View</a>
-                <a href="{% url 'task:update' id=task.id %}">Update</a>
-                <a href="{% url 'task:delete' id=task.id %}">Delete</a>            
-                <br><br>
-            </li>
-            {% endfor %}
-        </ul>
-     </main>    
-{% endblock %}
+{% block content %}
+<h1 class="ui header">TASKS</h1> 
+<div class="ui items">
+    {% for task in object_list %}
+    <div class="item">
+        <!-- <div class="ui small image"><img src="/images/wireframe/image.png"></div> -->
+        <div class="middle aligned content">
+            <div class="header">{{task.title}}</div>
+            <div class="meta">
+                <span>Deadline At {{task.deadline_at}}</span>                    
+            </div>                                
+            <div class="extra">                    
+                <div>{{task.description}}</div>
+                <a href="{% url 'task:delete' id=task.id %}" class="ui right floated button red"><i class="close icon"></i>delete</a>
+                <a href="{% url 'task:update' id=task.id %}" class="ui right floated button teal"><i class="edit icon"></i>edit</a>
+                <a href="{{ task.get_absolute_url }}" class="ui right floated button green"><i class="eye icon"></i>view</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}    

@@ -15,7 +15,7 @@ from django.shortcuts import (
     Http404
 )
 
-from ..forms import TaskForm, RawTaskForm
+from ..forms import TaskForm
 from ..models import Task
 
 class TaskListView(ListView):

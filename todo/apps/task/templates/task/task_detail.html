@@ -1,8 +1,15 @@
 {% extends 'base.html' %}
-{% block content %}        
-    <main>
-        <p>{{ object.title }}</p>
-        <p>{{ object.description }}</p>
-        <p>{{ object.deadline_at }}</p>
-    </main>    
+{% block content %}
+<div class="ui main container">
+    <h1 class="ui header">{{ object.title }}</h1>
+    <div class="meta">        
+        <small>Created At: {{ object.created_at|default_if_none:"" }}</small><br>
+        <small>Updated At: {{ object.updated_at|default_if_none:"" }}</small><br>
+        <small class="ui text red">Deadline At: {{ object.deadline_at|default_if_none:"" }}</small><br>
+        <small>Finished At: {{ object.finished_at|default_if_none:"" }}</small><br>   
+    </div>
+    <div class="text">
+        Description: {{ object.description }}
+    </div>    
+</div>
 {% endblock %}

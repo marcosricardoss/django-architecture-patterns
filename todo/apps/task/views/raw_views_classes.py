@@ -3,6 +3,9 @@
 from django.urls import reverse
 from django.views import View
 
+
+from utils.forms import DivErrorList
+
 from django.shortcuts import (
     render,
     get_object_or_404,
@@ -10,7 +13,7 @@ from django.shortcuts import (
     Http404
 )
 
-from ..forms import TaskForm, RawTaskForm
+from ..forms import TaskForm
 from ..models import Task
 
 class TaskObjectMixin(object):
@@ -41,13 +44,13 @@ class TaskCreateRawView(View):
     template_name = "task/task_create.html" # DetailView
     def get(self, request, *args, **kwargs):
         # GET method
-        form = TaskForm()
+        form = TaskForm(error_class=DivErrorList)
         context = {"form": form}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         # POST method
-        form = TaskForm(request.POST)
+        form = TaskForm(request.POST, error_class=DivErrorList)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse("task:index"))
@@ -62,7 +65,7 @@ class TaskUpdateRawView(TaskObjectMixin, View):
         context = {}
         obj = self.get_object()
         if obj is not None:
-            form = TaskForm(instance=obj)
+            form = TaskForm(instance=obj, error_class=DivErrorList)
             context['object'] = obj
             context['form'] = form
         return render(request, self.template_name, context)
@@ -72,7 +75,7 @@ class TaskUpdateRawView(TaskObjectMixin, View):
         context = {}
         obj = self.get_object()
         if obj is not None:
-            form = TaskForm(request.POST, instance=obj)
+            form = TaskForm(request.POST, instance=obj, error_class=DivErrorList)
             if form.is_valid():
                 form.save()            
             return HttpResponseRedirect(reverse("task:detail", kwargs={"id": obj.id}))        
