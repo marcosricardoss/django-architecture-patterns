@@ -1,17 +1,19 @@
 """Models of the 'task' app."""
 
 from django.db import models
-from django.utils import timezone
 from django.urls import reverse
 
+from utils.models import CreationModificationDateMixin
 
-class Task(models.Model):
+class Task(CreationModificationDateMixin):
     """ Task's model class."""
 
+    class Meta:
+        verbose_name = "Task"
+        verbose_name_plural = "Task"
+
     title = models.CharField(max_length=250)    
-    description = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField("Created", default=timezone.now)
-    updated_at = models.DateTimeField("Updated", null=True, blank=True)
+    description = models.TextField(null=True, blank=True)    
     deadline_at = models.DateTimeField("Deadline", help_text="The deadline date of the task") # models.DateTimeField()
     finished_at = models.DateTimeField("Finished", null=True, blank=True)
 
