@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="ui main container">
-    <h1 class="ui header">{{ object.title }}</h1>
+    <h1 class="ui header">
+        {{ object.title }}
+        {% if object.finished_at %}
+        <span class="ui green tiny label">finished</span>
+        {% else %}
+        <span class="ui orange tiny label">opend</span>
+        {% endif %}
+        {% if object.is_past_due %}
+        <span class="ui red tiny label">overdue</span>
+        {% endif %}
+    </h1>
     <div class="meta">        
         <small>Created At: {{ object.created_at|default_if_none:"" }}</small><br>
         <small>Updated At: {{ object.updated_at|default_if_none:"" }}</small><br>
@@ -10,6 +20,12 @@
     </div>
     <div class="text">
         Description: {{ object.description }}
+        <div class="extra">                    
+            <div>{{task.description}}</div>
+            <br>
+            <a href="{% url 'task:delete' id=object.id %}" class="ui right floated button red"><i class="close icon"></i>delete</a>
+            <a href="{% url 'task:update' id=object.id %}" class="ui right floated button teal"><i class="edit icon"></i>edit</a>            
+        </div>
     </div>    
 </div>
 {% endblock %}

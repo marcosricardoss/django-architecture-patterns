@@ -1,23 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="ui header">TASKS</h1> 
+<h1 class="ui header">
+    TASKS        
+</h1>
 <div class="ui items">
-    {% for task in object_list %}
+    {% for task in page_obj %}
     <div class="item">
         <!-- <div class="ui small image"><img src="/images/wireframe/image.png"></div> -->
         <div class="middle aligned content">
-            <div class="header">{{task.title}}</div>
-            <div class="meta">
-                <span>Deadline At {{task.deadline_at}}</span>                    
-            </div>                                
-            <div class="extra">                    
-                <div>{{task.description}}</div>
-                <a href="{% url 'task:delete' id=task.id %}" class="ui right floated button red"><i class="close icon"></i>delete</a>
-                <a href="{% url 'task:update' id=task.id %}" class="ui right floated button teal"><i class="edit icon"></i>edit</a>
-                <a href="{{ task.get_absolute_url }}" class="ui right floated button green"><i class="eye icon"></i>view</a>
+            <h3 class="ui header">
+                {{task.title}}
+                {% if task.finished_at %}
+                <span class="ui green mini label">finished</span>
+                {% else %}
+                <span class="ui orange mini label">opend</span>
+                {% endif %}
+                {% if task.is_past_due %}
+                <span class="ui red mini label">overdue</span>
+                {% endif %}
+            </h3>
+            <div class="extra ">
+                <small>Created At {{task.created_at}} | Deadline At {{task.deadline_at}}</small>
+            </div>
+            <div>{{task.description}}</div>
+            <div class="extra">
+                <a href="{% url 'task:delete' id=task.id %}" class="ui right floated button mini"><i
+                        class="close icon"></i>delete</a>
+                <a href="{% url 'task:update' id=task.id %}" class="ui right floated button mini"><i
+                        class="edit icon"></i>edit</a>
+                <a href="{{ task.get_absolute_url }}" class="ui right floated button mini"><i
+                        class="eye icon"></i>view</a>
             </div>
         </div>
     </div>
     {% endfor %}
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a class="ui button mini" href="?page=1"><i class="angle double left icon"></i></a>
+            <a class="ui button mini" href="?page={{ page_obj.previous_page_number }}"><i
+                    class="angle left icon"></i></a>
+            {% endif %}
+
+            <span class="current">
+                &nbsp;{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}&nbsp;
+            </span>
+
+            {% if page_obj.has_next %}
+            <a class="ui button mini" href="?page={{ page_obj.next_page_number }}"><i class="angle right icon"></i></a>
+            <a class="ui button mini" href="?page={{ page_obj.paginator.num_pages }}"><i
+                    class="angle double right icon"></i></a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
 </div>
-{% endblock %}    
+{% endblock %}

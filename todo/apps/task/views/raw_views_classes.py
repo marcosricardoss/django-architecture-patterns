@@ -1,7 +1,9 @@
 """ Raw views """
 
+from django.contrib import messages
 from django.urls import reverse
 from django.views import View
+from django.core.paginator import Paginator
 
 
 from utils.forms import DivErrorList
@@ -34,8 +36,12 @@ class TaskListRawView(View):
         return self.queryset
 
     def get(self, request, *args, **kwargs):
-        view_context = {
-            "object_list": [task for task in Task.objects.all()]
+        task_list = Task.objects.all()
+        paginator = Paginator(task_list,10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        view_context = {            
+            "page_obj": page_obj
         }
         return render(request, self.template_name, view_context)
 
@@ -53,6 +59,7 @@ class TaskCreateRawView(View):
         form = TaskForm(request.POST, error_class=DivErrorList)
         if form.is_valid():
             form.save()
+            messages.success(self.request, 'Task created successfully!')
             return HttpResponseRedirect(reverse("task:index"))
         context = {"form": form}
         return render(request, self.template_name, context)
@@ -77,7 +84,8 @@ class TaskUpdateRawView(TaskObjectMixin, View):
         if obj is not None:
             form = TaskForm(request.POST, instance=obj, error_class=DivErrorList)
             if form.is_valid():
-                form.save()            
+                form.save()      
+                messages.success(self.request, 'Task updated successfully!')         
             return HttpResponseRedirect(reverse("task:detail", kwargs={"id": obj.id}))        
 
 
@@ -97,6 +105,7 @@ class TaskDeleteRawView(TaskObjectMixin, View):
         obj = self.get_object()
         if obj is not None:
             obj.delete()            
+            messages.success(self.request, 'Task deleted successfully!')         
             return  HttpResponseRedirect(reverse('task:index'))
         return render(request, self.template_name, context)
 

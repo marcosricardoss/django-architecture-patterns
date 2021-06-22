@@ -3,13 +3,15 @@ from django.utils import timezone
 
 from .models import Task
 
+
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = [
             "title",
             "description",
-            "deadline_at"
+            "deadline_at",
+            "finished_at"
         ]
 
     title = forms.CharField(
@@ -46,15 +48,31 @@ class TaskForm(forms.ModelForm):
         )
     )
 
-    def clean_deadline_at(self, *args, **kwargs):
-        """ Example of validate method """
+    finished_at = forms.DateTimeField(
+        required=False,
+        # format of datetime-local: yyyy-MM-ddThh:mm
+        input_formats=['%Y-%m-%dT%H:%M'],
+        label='Finished',
+        widget=forms.DateTimeInput(
+            attrs={
+                "type": "datetime-local",
+            },
+            format='%Y-%m-%dT%H:%M'
+        )
+    )
 
-        deadline_at = self.cleaned_data.get("deadline_at")
-        if not self.instance.pk:
-            if deadline_at <= timezone.now():
-                raise forms.ValidationError(
-                    "This is not a valid deadline time.")
-        return deadline_at
+    # def clean_deadline_at(self, *args, **kwargs):
+    #     """ Example of validate method.
+    # 
+    #     Evaluating if the deadline datetime is greater than current time 
+    #     """
+    #
+    #     deadline_at = self.cleaned_data.get("deadline_at")
+    #     if not self.instance.pk:
+    #         if deadline_at <= timezone.now():
+    #             raise forms.ValidationError(
+    #                 "This is not a valid deadline time.")
+    #     return deadline_at
 
 
 class RawTaskForm(forms.Form):
@@ -66,6 +84,7 @@ class RawTaskForm(forms.Form):
             }
         )
     )
+
     description = forms.CharField(
         label='Description',
         required=False,
@@ -79,6 +98,7 @@ class RawTaskForm(forms.Form):
             }
         )
     )
+
     deadline_at = forms.DateTimeField(
         # format of datetime-local: yyyy-MM-ddThh:mm
         input_formats=['%Y-%m-%dT%H:%M'],
@@ -91,12 +111,28 @@ class RawTaskForm(forms.Form):
         )
     )
 
-    def clean_deadline_at(self, *args, **kwargs):
-        """ Example of validate method """
+    finished_at = forms.DateTimeField(
+        required=False,
+        # format of datetime-local: yyyy-MM-ddThh:mm
+        input_formats=['%Y-%m-%dT%H:%M'],
+        label='Finished',
+        widget=forms.DateTimeInput(
+            attrs={
+                "type": "datetime-local",
+            },
+            format='%Y-%m-%dT%H:%M'
+        )
+    )
 
-        deadline_at = self.cleaned_data.get("deadline_at")
-        if not self.instance.pk:
-            if deadline_at <= timezone.now():
-                raise forms.ValidationError(
-                    "This is not a valid deadline time.")
-        return deadline_at
+    # def clean_deadline_at(self, *args, **kwargs):
+    #     """ Example of validate method.
+    # 
+    #     Evaluating if the deadline datetime is greater than current time 
+    #     """
+    #
+    #     deadline_at = self.cleaned_data.get("deadline_at")
+    #     if not self.instance.pk:
+    #         if deadline_at <= timezone.now():
+    #             raise forms.ValidationError(
+    #                 "This is not a valid deadline time.")
+    #     return deadline_at

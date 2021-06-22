@@ -2,24 +2,35 @@
 
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
+
 
 from utils.models import CreationModificationDateMixin
+
 
 class Task(CreationModificationDateMixin):
     """ Task's model class."""
 
     class Meta:
-        ordering = ['deadline_at']
+        ordering = ['created_at']
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
 
-    title = models.CharField(max_length=250)    
-    description = models.TextField(null=True, blank=True)    
-    deadline_at = models.DateTimeField("Deadline", help_text="The deadline date of the task")
+    title = models.CharField(max_length=250)
+    description = models.TextField(null=True, blank=True)
+    deadline_at = models.DateTimeField(
+        "Deadline", help_text="The deadline date of the task")
     finished_at = models.DateTimeField("Finished", null=True, blank=True)
 
     def __str__(self) -> str:
         return self.title
 
+    @property
+    def is_past_due(self, *args, **kwargs):
+        if ((self.finished_at and self.finished_at > self.deadline_at) or
+            (timezone.now() > self.deadline_at)):
+            return True
+        return False
+
     def get_absolute_url(self, *args, **kwargs):
-        return reverse("task:detail", kwargs={"id":self.id})    
+        return reverse("task:detail", kwargs={"id": self.id})
