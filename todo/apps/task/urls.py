@@ -7,7 +7,7 @@ app_name = 'task'
 # Raw views
 #########################################################
 
-from .views.raw_views_classes import (    
+from .views import (    
     TaskCreateRawView,
     TaskDeleteRawView,
     TaskDetailRawView,
@@ -27,7 +27,7 @@ urlpatterns = [
 # # Classes based views
 # #########################################################
 
-# from .views.classes_based_views import (
+# from .views (
 #     TaskCreateView,
 #     TaskDeleteView,
 #     TaskDetailView,
@@ -47,7 +47,7 @@ urlpatterns = [
 # Functions based Views
 #########################################################
 
-# from .views.function_views import (     
+# from .views (     
 #     list_view,
 #     create_view, 
 #     create_view_raw,
