@@ -113,8 +113,8 @@ class TaskDeleteRawView(TaskObjectMixin, View):
 class TaskDetailRawView(TaskObjectMixin, View):
     template_name = "task/task_detail.html" # DetailView    
     def get(self, request, id=None, *args, **kwargs):
-        # GET method
+        # GET method        
         view_context = {            
-            "object": self.get_object()
+            "object": self.get_object()        
         }
         return render(request, self.template_name, view_context)

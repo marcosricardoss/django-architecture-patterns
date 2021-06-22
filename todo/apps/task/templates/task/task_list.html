@@ -3,7 +3,7 @@
 <h1 class="ui header">
     TASKS        
 </h1>
-<div class="ui items">
+<div class="ui divided items">
     {% for task in page_obj %}
     <div class="item">
         <!-- <div class="ui small image"><img src="/images/wireframe/image.png"></div> -->
@@ -21,9 +21,12 @@
             </h3>
             <div class="extra ">
                 <small>Created At {{task.created_at}} | Deadline At {{task.deadline_at}}</small>
-            </div>
+            </div>            
             <div>{{task.description}}</div>
-            <div class="extra">
+            <div class="extra">                                
+                {% for tag in task.tag_list %}
+                <div class="ui tiny label olive">{{ tag.slug }}</div>
+                {% endfor %}                
                 <a href="{% url 'task:delete' id=task.id %}" class="ui right floated button mini"><i
                         class="close icon"></i>delete</a>
                 <a href="{% url 'task:update' id=task.id %}" class="ui right floated button mini"><i

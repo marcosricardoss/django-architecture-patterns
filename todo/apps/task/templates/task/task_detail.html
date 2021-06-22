@@ -23,9 +23,12 @@
         <div class="extra">                    
             <div>{{task.description}}</div>
             <br>
+            {% for tag in object.tag_list %}
+            <div class="ui tiny label olive">{{ tag.slug }}</div>
+            {% endfor %}
             <a href="{% url 'task:delete' id=object.id %}" class="ui right floated button red"><i class="close icon"></i>delete</a>
             <a href="{% url 'task:update' id=object.id %}" class="ui right floated button teal"><i class="edit icon"></i>edit</a>            
         </div>
-    </div>    
+    </div>        
 </div>
 {% endblock %}

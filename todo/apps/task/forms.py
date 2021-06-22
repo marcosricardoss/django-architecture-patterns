@@ -11,7 +11,8 @@ class TaskForm(forms.ModelForm):
             "title",
             "description",
             "deadline_at",
-            "finished_at"
+            "finished_at",
+            "tags",
         ]
 
     title = forms.CharField(
