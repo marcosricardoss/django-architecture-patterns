@@ -21,7 +21,7 @@
     <div class="text">
         Description: {{ object.description }}
         <div class="extra">                    
-            <div>{{task.description}}</div>
+            <div>{{object.description}}</div>
             <br>
             {% for tag in object.tag_list %}
             <div class="ui tiny label olive">{{ tag.slug }}</div>
