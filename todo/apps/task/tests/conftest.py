@@ -16,17 +16,13 @@ def dates():
     tomorrow = today + timedelta(days=1)
     later = tomorrow + timedelta(days=10)
 
-    return {
-        "today": today,
-        "tomorrow": tomorrow,
-        "later": later
-    }
+    return {"today": today, "tomorrow": tomorrow, "later": later}
 
 
 @pytest.fixture
 def django_db_setup(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
-        call_command('loaddata', 'dumpdata.json')
+        call_command("loaddata", "dumpdata.json")
 
 
 @pytest.fixture
@@ -38,7 +34,6 @@ def client():
 def browser():
     chrome_options = webdriver.ChromeOptions()
     driver = webdriver.Remote(
-        command_executor=os.environ.get("SELENIUM_URL"),
-        options=chrome_options
+        command_executor=os.environ.get("SELENIUM_URL"), options=chrome_options
     )
     yield driver

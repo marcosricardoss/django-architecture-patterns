@@ -9,26 +9,35 @@ from .tag import Tag
 
 
 class Task(CreationModificationDateMixin):
-    """ Task's model class."""
+    """Task's model class."""
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ["created_at"]
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
 
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
-    deadline_at = models.DateTimeField("Deadline", help_text="The deadline date of the task")
+    deadline_at = models.DateTimeField(
+        "Deadline", help_text="The deadline date of the task"
+    )
     finished_at = models.DateTimeField("Finished", null=True, blank=True)
-    tags = models.ManyToManyField(Tag, help_text=mark_safe("<small>Can be added by the Django administration panel</small>"), blank=True)
+    tags = models.ManyToManyField(
+        Tag,
+        help_text=mark_safe(
+            "<small>Can be added by the Django administration panel</small>"
+        ),
+        blank=True,
+    )
 
     def __str__(self) -> str:
         return self.title
 
     @property
     def is_past_due(self, *args, **kwargs):
-        if ((self.finished_at and self.finished_at > self.deadline_at) or
-                (timezone.now() > self.deadline_at)):
+        if (self.finished_at and self.finished_at > self.deadline_at) or (
+            timezone.now() > self.deadline_at
+        ):
             return True
         return False
 

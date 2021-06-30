@@ -5,7 +5,7 @@ from utils.models import CreationModificationDateMixin
 
 
 class Tag(CreationModificationDateMixin):
-    """ Tag's model class."""
+    """Tag's model class."""
 
     class Meta:
         verbose_name = "Tag"

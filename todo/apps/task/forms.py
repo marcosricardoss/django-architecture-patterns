@@ -16,18 +16,12 @@ class TaskForm(forms.ModelForm):
         ]
 
     title = forms.CharField(
-        label='Task Title',
-        widget=forms.TextInput(
-            attrs={
-                "placeholder": "The Task Title"
-            }
-        ),
-        error_messages = {
-            'required':"Please Enter The Task Title"
-        }
+        label="Task Title",
+        widget=forms.TextInput(attrs={"placeholder": "The Task Title"}),
+        error_messages={"required": "Please Enter The Task Title"},
     )
     description = forms.CharField(
-        label='Description',
+        label="Description",
         required=False,
         widget=forms.Textarea(
             attrs={
@@ -35,40 +29,40 @@ class TaskForm(forms.ModelForm):
                 "id": "id-for-textarea",
                 "rows": 4,
                 "cols": 25,
-                "placeholder": "The Task Description"
+                "placeholder": "The Task Description",
             }
-        )
+        ),
     )
 
     deadline_at = forms.DateTimeField(
         # format of datetime-local: yyyy-MM-ddThh:mm
-        input_formats=['%Y-%m-%dT%H:%M'],
-        label='Deadline',
+        input_formats=["%Y-%m-%dT%H:%M"],
+        label="Deadline",
         widget=forms.DateTimeInput(
             attrs={
                 "type": "datetime-local",
             },
-            format='%Y-%m-%dT%H:%M'
-        )
+            format="%Y-%m-%dT%H:%M",
+        ),
     )
 
     finished_at = forms.DateTimeField(
         required=False,
         # format of datetime-local: yyyy-MM-ddThh:mm
-        input_formats=['%Y-%m-%dT%H:%M'],
-        label='Finished',
+        input_formats=["%Y-%m-%dT%H:%M"],
+        label="Finished",
         widget=forms.DateTimeInput(
             attrs={
                 "type": "datetime-local",
             },
-            format='%Y-%m-%dT%H:%M'
-        )
+            format="%Y-%m-%dT%H:%M",
+        ),
     )
 
     # def clean_deadline_at(self, *args, **kwargs):
     #     """ Example of validate method.
-    # 
-    #     Evaluating if the deadline datetime is greater than current time 
+    #
+    #     Evaluating if the deadline datetime is greater than current time
     #     """
     #
     #     deadline_at = self.cleaned_data.get("deadline_at")
@@ -81,16 +75,12 @@ class TaskForm(forms.ModelForm):
 
 class RawTaskForm(forms.Form):
     title = forms.CharField(
-        label='Task Title',
-        widget=forms.TextInput(
-            attrs={
-                "placeholder": "The Task Title"
-            }
-        )
+        label="Task Title",
+        widget=forms.TextInput(attrs={"placeholder": "The Task Title"}),
     )
 
     description = forms.CharField(
-        label='Description',
+        label="Description",
         required=False,
         widget=forms.Textarea(
             attrs={
@@ -98,40 +88,40 @@ class RawTaskForm(forms.Form):
                 "id": "id-for-textarea",
                 "rows": 4,
                 "cols": 25,
-                "placeholder": "The Task Description"
+                "placeholder": "The Task Description",
             }
-        )
+        ),
     )
 
     deadline_at = forms.DateTimeField(
         # format of datetime-local: yyyy-MM-ddThh:mm
-        input_formats=['%Y-%m-%dT%H:%M'],
-        label='Deadline',
+        input_formats=["%Y-%m-%dT%H:%M"],
+        label="Deadline",
         widget=forms.DateTimeInput(
             attrs={
                 "type": "datetime-local",
             },
-            format='%Y-%m-%dT%H:%M'
-        )
+            format="%Y-%m-%dT%H:%M",
+        ),
     )
 
     finished_at = forms.DateTimeField(
         required=False,
         # format of datetime-local: yyyy-MM-ddThh:mm
-        input_formats=['%Y-%m-%dT%H:%M'],
-        label='Finished',
+        input_formats=["%Y-%m-%dT%H:%M"],
+        label="Finished",
         widget=forms.DateTimeInput(
             attrs={
                 "type": "datetime-local",
             },
-            format='%Y-%m-%dT%H:%M'
-        )
+            format="%Y-%m-%dT%H:%M",
+        ),
     )
 
     # def clean_deadline_at(self, *args, **kwargs):
     #     """ Example of validate method.
-    # 
-    #     Evaluating if the deadline datetime is greater than current time 
+    #
+    #     Evaluating if the deadline datetime is greater than current time
     #     """
     #
     #     deadline_at = self.cleaned_data.get("deadline_at")

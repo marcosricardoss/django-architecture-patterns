@@ -23,7 +23,7 @@ def test_task_create(dates):
     assert task.created_at >= dates["today"]
     assert task.updated_at >= dates["today"]
     assert not task.is_past_due
-    assert task.get_absolute_url() == f'/detail/{task.id}/'
+    assert task.get_absolute_url() == f"/detail/{task.id}/"
     assert str(task) == "Task Name"
 
 
@@ -47,7 +47,7 @@ def test_task_create_with_tags(dates):
     assert task.created_at >= dates["today"]
     assert task.updated_at >= dates["today"]
     assert not task.is_past_due
-    assert task.get_absolute_url() == f'/detail/{task.id}/'
+    assert task.get_absolute_url() == f"/detail/{task.id}/"
     assert task.tag_list[0].slug == "tag-slug-1"
     assert task.tag_list[1].slug == "tag-slug-2"
     assert str(task) == "Task Name"
@@ -67,7 +67,7 @@ def test_task_create_with_past_due_equal_to_true(dates):
         title="Task Name",
         description="Task description",
         deadline_at=dates["tomorrow"],
-        finished_at=dates["later"]
+        finished_at=dates["later"],
     )
     task.save()
     assert task.is_past_due

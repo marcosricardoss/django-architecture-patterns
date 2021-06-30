@@ -1,26 +1,26 @@
 from django.urls import path
 
 
-app_name = 'task'
+app_name = "task"
 
 #########################################################
 # Raw views
 #########################################################
 
-from .views import (    
+from .views import (
     TaskCreateRawView,
     TaskDeleteRawView,
     TaskDetailRawView,
-    TaskListRawView,      
-    TaskUpdateRawView  
+    TaskListRawView,
+    TaskUpdateRawView,
 )
 
 urlpatterns = [
-    path('', TaskListRawView.as_view(), name='index'),
-    path('create/', TaskCreateRawView.as_view(), name='create'),
-    path('update/<int:id>/', TaskUpdateRawView.as_view(), name='update'),
-    path('delete/<int:id>/', TaskDeleteRawView.as_view(), name='delete'),
-    path('detail/<int:id>/', TaskDetailRawView.as_view(), name='detail')    
+    path("", TaskListRawView.as_view(), name="index"),
+    path("create/", TaskCreateRawView.as_view(), name="create"),
+    path("update/<int:id>/", TaskUpdateRawView.as_view(), name="update"),
+    path("delete/<int:id>/", TaskDeleteRawView.as_view(), name="delete"),
+    path("detail/<int:id>/", TaskDetailRawView.as_view(), name="detail"),
 ]
 
 # #########################################################
@@ -40,20 +40,20 @@ urlpatterns = [
 #     path('create/', TaskCreateView.as_view(), name='create'),
 #     path('update/<int:id>/', TaskUpdateView.as_view(), name='update'),
 #     path('delete/<int:id>/', TaskDeleteView.as_view(), name='delete'),
-#     path('detail/<int:id>/', TaskDetailView.as_view(), name='detail')    
+#     path('detail/<int:id>/', TaskDetailView.as_view(), name='detail')
 # ]
 
 #########################################################
 # Functions based Views
 #########################################################
 
-# from .views (     
+# from .views (
 #     list_view,
-#     create_view, 
+#     create_view,
 #     create_view_raw,
 #     update_view ,
 #     delete_view,
-#     detail_view    
+#     detail_view
 # )
 
 # urlpatterns = [
@@ -62,5 +62,5 @@ urlpatterns = [
 #     path('createraw/', create_view_raw, name='createraw'),
 #     path('update/<int:id>/', update_view, name='update'),
 #     path('delete/<int:id>/', delete_view, name='delete'),
-#     path('detail/<int:id>/', detail_view, name='detail')    
+#     path('detail/<int:id>/', detail_view, name='detail')
 # ]

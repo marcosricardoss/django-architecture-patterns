@@ -8,19 +8,29 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Task',
+            name="Task",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=250)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(blank=True, null=True)),
-                ('deadline_at', models.DateTimeField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=250)),
+                ("description", models.TextField(blank=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                ("updated_at", models.DateTimeField(blank=True, null=True)),
+                ("deadline_at", models.DateTimeField()),
             ],
         ),
     ]

@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class TaskConfig(AppConfig):
-    name = 'task'
+    name = "task"
     verbose_name = _("Task")
 
     def ready(self):
