@@ -11,11 +11,10 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import tempfile
 from posixpath import join
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -26,10 +25,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get('DJANGO_USE_DEBUG') else False
 
-ALLOWED_HOSTS = ['localhost',
-                 os.environ.get('SITE_HOST')] if os.environ.get('SITE_HOST') else ['localhost']
-
-# Application definition
+ALLOWED_HOSTS = ['localhost', os.environ.get('SITE_HOST')]
+if DEBUG: ALLOWED_HOSTS += ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -41,8 +38,7 @@ INSTALLED_APPS = [
     'utils.apps.UtilsConfig',
     'task.apps.TaskConfig'
 ]
-if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'):
-    INSTALLED_APPS += ['debug_toolbar']
+if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'): INSTALLED_APPS += ['debug_toolbar']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,8 +49,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'):
-    MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'): MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 ROOT_URLCONF = 'main.urls'
 
@@ -70,12 +65,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        },
+            'debug': DEBUG,
+        }
     },
 ]
 
 WSGI_APPLICATION = 'main.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -101,6 +96,7 @@ if os.environ.get('POSTGRESQL_HOST'):
 
 # Logging
 # https://docs.djangoproject.com/en/dev/topics/logging/
+
 LOGGING = {
     'version': 1,
     'formatters': {
@@ -136,6 +132,7 @@ if DEBUG:
     # make all loggers use the console.
     for logger in LOGGING['loggers']:
         LOGGING['loggers'][logger]['handlers'] = ['console']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -176,16 +173,15 @@ LOCALE_PATHS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'site_static'),
+]
 # Static server for deployment with Nginx
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-if os.environ.get('STATIC_HOST'):
-    STATIC_DOMAIN = os.environ.get('STATIC_HOST')
-    STATIC_URL = f'http://{STATIC_DOMAIN}/'
+STATIC_DOMAIN = os.environ.get('STATIC_HOST')
+STATIC_URL = f'http://{STATIC_DOMAIN}/'
 
-MEDIA_URL = '/media/'
 # Media server for deployment with Nginx
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-if os.environ.get('MEDIA_HOST'):
-    MEDIA_DOMAIN = os.environ.get('MEDIA_HOST')
-    MEDIA_URL = f'http://{MEDIA_DOMAIN}/'
+MEDIA_DOMAIN = os.environ.get('MEDIA_HOST')
+MEDIA_URL = f'http://{MEDIA_DOMAIN}/'

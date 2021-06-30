@@ -1,0 +1,17 @@
+body {
+    background-color: #FFFFFF;
+}
+
+.ui.menu .item i.logo {
+    color: #6dffff;
+    font-size: 32px;
+}
+
+.main.container {
+    margin-top: 7em;
+}
+
+.ui.footer.segment {
+    margin: 5em 0em 0em;
+    padding: 1em 0;
+}

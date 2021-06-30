@@ -21,7 +21,10 @@ class TaskForm(forms.ModelForm):
             attrs={
                 "placeholder": "The Task Title"
             }
-        )
+        ),
+        error_messages = {
+            'required':"Please Enter The Task Title"
+        }
     )
     description = forms.CharField(
         label='Description',

@@ -8,6 +8,6 @@
 <form class="ui form" action="." method="POST" >      
     {% csrf_token %} 
     {{ form.as_p }}                          
-    <input type="submit" value="Save" class="ui green button">    
+    <input id="save_bt" type="submit" value="Save" class="ui green button">    
 </form>
 {% endblock %}

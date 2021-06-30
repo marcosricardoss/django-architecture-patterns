@@ -18,11 +18,9 @@ class Task(CreationModificationDateMixin):
 
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
-    deadline_at = models.DateTimeField(
-        "Deadline", help_text="The deadline date of the task")
+    deadline_at = models.DateTimeField("Deadline", help_text="The deadline date of the task")
     finished_at = models.DateTimeField("Finished", null=True, blank=True)
-    tags = models.ManyToManyField(Tag, help_text=mark_safe(
-        "<small>Can be added by the Django administration panel</small>"), blank=True)
+    tags = models.ManyToManyField(Tag, help_text=mark_safe("<small>Can be added by the Django administration panel</small>"), blank=True)
 
     def __str__(self) -> str:
         return self.title

@@ -23,7 +23,7 @@ class TaskObjectMixin(object):
     def get_object(self):
         id = self.kwargs.get('id')
         obj = None
-        if id is not None:
+        if id is not None: # pragma: no cover
             obj = get_object_or_404(self.model, id=id)
         return obj 
 
@@ -32,12 +32,9 @@ class TaskListRawView(View):
     template_name = "task/task_list.html"
     queryset = Task.objects.all()
 
-    def get_queryset(self):
-        return self.queryset
-
     def get(self, request, *args, **kwargs):
         task_list = Task.objects.all()
-        paginator = Paginator(task_list,10)
+        paginator = Paginator(task_list, 8)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         view_context = {            
@@ -70,45 +67,36 @@ class TaskUpdateRawView(TaskObjectMixin, View):
     def get(self, request, id=None, *args, **kwargs):
         # GET method
         context = {}
-        obj = self.get_object()
-        if obj is not None:
-            form = TaskForm(instance=obj, error_class=DivErrorList)
-            context['object'] = obj
-            context['form'] = form
+        obj = self.get_object()        
+        form = TaskForm(instance=obj, error_class=DivErrorList)
+        context['object'] = obj
+        context['form'] = form
         return render(request, self.template_name, context)
 
     def post(self, request, id=None,  *args, **kwargs):
-        # POST method
-        context = {}
-        obj = self.get_object()
-        if obj is not None:
-            form = TaskForm(request.POST, instance=obj, error_class=DivErrorList)
-            if form.is_valid():
-                form.save()      
-                messages.success(self.request, 'Task updated successfully!')         
-            return HttpResponseRedirect(reverse("task:detail", kwargs={"id": obj.id}))        
+        # POST method        
+        obj = self.get_object()        
+        form = TaskForm(request.POST, instance=obj, error_class=DivErrorList)
+        if form.is_valid():
+            form.save()      
+            messages.success(self.request, 'Task updated successfully!')         
+        return HttpResponseRedirect(reverse("task:detail", kwargs={"id": obj.id}))        
 
 
 class TaskDeleteRawView(TaskObjectMixin, View):
     template_name = "task/task_delete.html" # DetailView
     def get(self, request, id=None, *args, **kwargs):
-        # GET method
-        context = {}
-        obj = self.get_object()
-        if obj is not None:
-            context['object'] = obj
+        # GET method        
+        obj = self.get_object()        
+        context = {'object': obj}
         return render(request, self.template_name, context)
 
     def post(self, request, id=None,  *args, **kwargs):
-        # POST method        
-        context = {}
-        obj = self.get_object()
-        if obj is not None:
-            obj.delete()            
-            messages.success(self.request, 'Task deleted successfully!')         
-            return  HttpResponseRedirect(reverse('task:index'))
-        return render(request, self.template_name, context)
-
+        # POST method                
+        obj = self.get_object()        
+        obj.delete()            
+        messages.success(self.request, 'Task deleted successfully!')         
+        return  HttpResponseRedirect(reverse('task:index'))
 
 class TaskDetailRawView(TaskObjectMixin, View):
     template_name = "task/task_detail.html" # DetailView    

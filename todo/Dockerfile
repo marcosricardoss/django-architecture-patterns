@@ -21,5 +21,4 @@ ADD manage.py ./manage.py
 ADD start ./start
 
 # tests setup
-
 ADD setup.cfg ./setup.cfg

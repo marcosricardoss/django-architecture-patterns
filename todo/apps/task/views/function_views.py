@@ -13,14 +13,14 @@ from utils.forms import DivErrorList
 from ..forms import TaskForm, RawTaskForm
 from ..models import Task
 
-def list_view(request, *args, **kwargs):
+def list_view(request, *args, **kwargs): # pragma: no cover
     """  """
     view_context = {
         "object_list": [task for task in Task.objects.all()]
     }
     return render(request, "task/task_list.html", view_context)
 
-def create_view(request, *args, **kwargs):
+def create_view(request, *args, **kwargs): # pragma: no cover
     """ Using built-in django form """
 
     form = TaskForm(request.POST or None)
@@ -34,7 +34,7 @@ def create_view(request, *args, **kwargs):
     return render(request, "task/task_create.html", view_context)
 
 
-def create_view_raw(request, *args, **kwargs):
+def create_view_raw(request, *args, **kwargs): # pragma: no cover
     """ Creating a raw django form """
     
     if request.method == "POST":
@@ -53,7 +53,7 @@ def create_view_raw(request, *args, **kwargs):
 
     Http404()
 
-def update_view(request, id, *args, **kwargs):
+def update_view(request, id, *args, **kwargs): # pragma: no cover
     """ Using built-in django form """
 
     # # Option 1
@@ -85,7 +85,7 @@ def update_view(request, id, *args, **kwargs):
 
     Http404()
 
-def delete_view(request, id, *args, **kwargs):
+def delete_view(request, id, *args, **kwargs): # pragma: no cover
     """  """
 
      # # Option 1
@@ -115,7 +115,7 @@ def delete_view(request, id, *args, **kwargs):
 
     Http404()    
 
-def detail_view(request, id, *args, **kwargs):
+def detail_view(request, id, *args, **kwargs): # pragma: no cover
     """  """
 
     # # Option 1

@@ -18,14 +18,14 @@ from django.shortcuts import (
 from ..forms import TaskForm
 from ..models import Task
 
-class TaskListView(ListView):
+class TaskListView(ListView): # pragma: no cover
     """ ListView """
     
     template_name = "task/task_list.html"
     queryset = Task.objects.all()
 
 
-class TaskCreateView(CreateView):
+class TaskCreateView(CreateView): # pragma: no cover
     """ CreateView """
 
     template_name = "task/task_create.html"
@@ -50,7 +50,7 @@ class TaskCreateView(CreateView):
         return reverse('task:index')        
 
 
-class TaskUpdateView(UpdateView):
+class TaskUpdateView(UpdateView): # pragma: no cover
     """ UpdateView """
 
     template_name = "task/task_create.html"
@@ -73,7 +73,7 @@ class TaskUpdateView(UpdateView):
         return get_object_or_404(Task, id=_id)     
 
 
-class TaskDeleteView(DeleteView):
+class TaskDeleteView(DeleteView): # pragma: no cover
     """ DeleteView """
 
     template_name = "task/task_delete.html"
@@ -92,7 +92,7 @@ class TaskDeleteView(DeleteView):
         return reverse('task:index')
         
 
-class TaskDetailView(DetailView):
+class TaskDetailView(DetailView): # pragma: no cover
     """ DetailView """
 
     template_name = "task/task_detail.html"    

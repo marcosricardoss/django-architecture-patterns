@@ -11,7 +11,7 @@ class Tag(CreationModificationDateMixin):
         verbose_name = "Tag"
         verbose_name_plural = "Tags"
 
-    slug = models.SlugField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True, blank=False)
 
     def __str__(self) -> str:
         return self.slug
