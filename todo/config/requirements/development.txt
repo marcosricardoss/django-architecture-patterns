@@ -1,8 +1,10 @@
 -r base.txt
+PyYAML
 coverage
 django-debug-toolbar
 django_coverage_plugin
+mypy
 pytest-django
-PyYAML
+pytest-mypy
 selenium
 webdriver-manager
