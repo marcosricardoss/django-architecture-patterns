@@ -1,1 +1,1 @@
-# Basic Django Architecture
+# Architecture Pattern with Django
