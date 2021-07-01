@@ -55,7 +55,7 @@ def test_post_task_via_form_with_invalid_data(client, dates):
 
 
 @pytest.mark.django_db
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_task_create_view_page_when_do_click_on_save_button(browser):
     browser.get(f"{APP_URL}/create/")
 

@@ -1,4 +1,4 @@
-from .task import Task
+from task.models import Task
 from .repository import DjangoRepository
 
 

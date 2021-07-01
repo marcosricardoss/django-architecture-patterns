@@ -11,7 +11,8 @@ from utils.forms import DivErrorList
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, Http404
 
 from ..forms import TaskForm
-from ..models import TaskRepository, Task
+from ..models import Task
+from ..repositories import TaskRepository
 
 
 class TaskObjectMixin(object):

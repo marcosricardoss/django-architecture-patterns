@@ -1,7 +1,8 @@
 import pytest
 from django.utils.dateparse import parse_datetime
 
-from task.models import Task, Tag, DjangoRepository, TagRepository, TaskRepository
+from task.models import Task, Tag
+from task.repositories import DjangoRepository, TagRepository, TaskRepository
 
 
 @pytest.mark.django_db
