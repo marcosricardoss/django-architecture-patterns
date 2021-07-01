@@ -10,19 +10,22 @@ build:
 up:
 	docker-compose up -d
 
-down:
-	docker-compose down --remove-orphans
+up-tests:
+	docker-compose -f docker-compose-test.yml up -d
 
-test: up
-	docker-compose run --rm --no-deps --entrypoint=pytest todo-app
+down:
+	docker-compose -f docker-compose.yml down --remove-orphans
+
+test: up-tests
+	docker-compose run --rm --no-deps --entrypoint=pytest todo-app	
 
 unit-tests:
 	docker-compose run --rm --no-deps --entrypoint=pytest todo-app ${BASEDIR}/task/tests/unit/
 
-integration-tests: up
+integration-tests: up-tests
 	docker-compose run --rm --no-deps --entrypoint=pytest todo-app ${BASEDIR}/task/tests/integration
 
-e2e-tests: up
+e2e-tests: up-tests
 	docker-compose run --rm --no-deps --entrypoint=pytest todo-app ${BASEDIR}/task/tests/e2e
 
 logs:

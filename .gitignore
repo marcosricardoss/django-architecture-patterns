@@ -31,6 +31,7 @@ docs/_build/
 target/
 # Visual Code
 .vscode
+.devcontainer
 # Environment files
 .env
 # sqlite files
