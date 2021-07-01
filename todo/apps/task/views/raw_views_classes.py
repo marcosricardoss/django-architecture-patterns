@@ -11,11 +11,11 @@ from utils.forms import DivErrorList
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, Http404
 
 from ..forms import TaskForm
-from ..models import Task
+from ..models import TaskRepository, Task
 
 
 class TaskObjectMixin(object):
-    model = Task
+    model = TaskRepository().model
 
     def get_object(self):
         id = self.kwargs.get("id")
@@ -27,10 +27,10 @@ class TaskObjectMixin(object):
 
 class TaskListRawView(View):
     template_name = "task/task_list.html"
-    queryset = Task.objects.all()
+    queryset = TaskRepository().list()
 
     def get(self, request, *args, **kwargs):
-        task_list = Task.objects.all()
+        task_list = TaskRepository().list()
         paginator = Paginator(task_list, 8)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
