@@ -1,18 +1,17 @@
 """ Raw views """
 
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db import transaction
+from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.views import View
-from django.core.paginator import Paginator
-
 
 from utils.forms import DivErrorList
 
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, Http404
-
-from ..forms import TaskForm
-from ..models import Task
+from ..services import services
 from ..repositories import TaskRepository
+from ..forms import TaskForm
 
 
 class TaskObjectMixin(object):
@@ -52,7 +51,13 @@ class TaskCreateRawView(View):
         # POST method
         form = TaskForm(request.POST, error_class=DivErrorList)
         if form.is_valid():
-            form.save()
+            services.add_task(
+                form.cleaned_data["title"],
+                form.cleaned_data["description"],
+                form.cleaned_data["deadline_at"],
+                form.cleaned_data["finished_at"],
+                transaction.atomic(),
+            )
             messages.success(self.request, "Task created successfully!")
             return HttpResponseRedirect(reverse("task:index"))
         context = {"form": form}

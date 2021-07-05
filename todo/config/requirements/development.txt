@@ -5,6 +5,7 @@ django-debug-toolbar
 django_coverage_plugin
 mypy
 pytest-django
+pytest-mock
 pytest-mypy
 selenium
 webdriver-manager
