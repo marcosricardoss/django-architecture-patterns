@@ -1,5 +1,7 @@
 import pytest
 
+from django.db import IntegrityError
+
 from task.models import Task
 from task.services import unit_of_work, services
 
@@ -37,7 +39,7 @@ def test_add_batch(dates, monkeypatch):
 
 def test_add_batch_with_exception(dates, monkeypatch):
     def save(*args, **kwargs):
-        raise services.TaskException()
+        raise IntegrityError()
 
     monkeypatch.setattr(Task, "save", save)
     uow = FakeUnitOfWork()
