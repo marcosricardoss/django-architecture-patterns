@@ -17,4 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-urlpatterns = [path("", include("task.urls")), path("admin/", admin.site.urls)]
+urlpatterns = [ 
+    path("", include("task.urls")), 
+    path("crontab_manager/", include("crontab_manager.urls")), 
+    path("admin/", admin.site.urls)
+]
