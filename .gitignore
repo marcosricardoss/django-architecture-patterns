@@ -1,5 +1,5 @@
 # Project files and directories
-todo/apps/django_crontab_manager/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

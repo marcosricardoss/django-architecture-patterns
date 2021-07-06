@@ -39,7 +39,6 @@ services:
       STATIC_HOST: 'localhost:1002'
 
     volumes:
-      - './todo/apps/crontab_manager:/usr/src/app/crontab_manager'
       - './todo/apps/django_crontab_manager:/usr/src/app/django_crontab_manager'
       - './todo/apps/task:/usr/src/app/task' 
       - './todo/apps/utils:/usr/src/app/utils'

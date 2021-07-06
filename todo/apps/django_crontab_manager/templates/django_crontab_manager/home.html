@@ -1,4 +1,4 @@
-{% extends 'crontab_manager/base.html' %}
+{% extends 'django_crontab_manager/base.html' %}
 {% load lookup_dict %}
 {% block content %}
 <h1 class="ui header">CRONJOBS</h1>
@@ -25,7 +25,7 @@
             <tr>
                 <th></th>
                 <th colspan="4">
-                    <a href="{% url 'crontab_manager:add' %}" class="ui right floated small primary labeled icon button">
+                    <a href="{% url 'django_crontab_manager:add' %}" class="ui right floated small primary labeled icon button">
                         {% if running_cronjobs %}
                         <i class="caret square right icon"></i> Reload                        
                         {% else %}
@@ -58,7 +58,7 @@
                 <td data-label="cronjob"><small>{{cronjob|lookup_dict:"setting"}}</small></td>
                 <td data-label="cronjob"><small>{{cronjob|lookup_dict:"command"}}</small></td>
                 <td data-label="actions">
-                    <a href="{% url 'crontab_manager:run' jobhash=jobhash %}"
+                    <a href="{% url 'django_crontab_manager:run' jobhash=jobhash %}"
                         class="ui right floated mini positive labeled icon button">
                         <i class="caret square right icon"></i> Execute
                     </a>
@@ -70,7 +70,7 @@
             <tr>
                 <th></th>
                 <th colspan="4">
-                    <a href="{% url 'crontab_manager:remove' %}" class="ui right floated small negative labeled icon button">
+                    <a href="{% url 'django_crontab_manager:remove' %}" class="ui right floated small negative labeled icon button">
                         <i class="user icon"></i> Remove All
                     </a>
                 </th>

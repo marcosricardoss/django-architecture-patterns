@@ -1,7 +1,7 @@
 from django.urls import path
 
 
-app_name = "crontab_manager"
+app_name = "django_crontab_manager"
 
 from .views import (
     CronJobHomeView,    

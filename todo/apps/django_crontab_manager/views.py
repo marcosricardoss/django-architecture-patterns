@@ -16,7 +16,7 @@ register = template.Library()
 
 
 class CronJobHomeView(View):
-    template_name = "crontab_manager/home.html"
+    template_name = "django_crontab_manager/home.html"
 
     def get(self, request, *args, **kwargs):
         view_context = {
@@ -31,18 +31,18 @@ class RunCronJobView(View):
         jobhash = self.kwargs.get("jobhash")
         run_cronjob(jobhash)
         messages.success(self.request, f"Running the {jobhash} cronjob")
-        return HttpResponseRedirect(reverse("crontab_manager:home"))
+        return HttpResponseRedirect(reverse("django_crontab_manager:home"))
 
 
 class AddAllCronJobsView(View):
     def get(self, request, *args, **kwargs):
         add_all_cronjobs()
         messages.success(self.request, f"All cronjobs were removed from execution successfully!")
-        return HttpResponseRedirect(reverse("crontab_manager:home"))
+        return HttpResponseRedirect(reverse("django_crontab_manager:home"))
 
 
 class RemoveAllCronJobsView(View):
     def get(self, request, *args, **kwargs):
         remove_all_cronjobs()
         messages.success(self.request, f"All cronjobs were removed successfully!")
-        return HttpResponseRedirect(reverse("crontab_manager:home"))
+        return HttpResponseRedirect(reverse("django_crontab_manager:home"))

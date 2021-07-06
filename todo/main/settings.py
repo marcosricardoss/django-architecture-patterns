@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_crontab",
-    "crontab_manager",
+    "django_crontab_manager",
     "utils.apps.UtilsConfig",    
     "task.apps.TaskConfig",
 ]

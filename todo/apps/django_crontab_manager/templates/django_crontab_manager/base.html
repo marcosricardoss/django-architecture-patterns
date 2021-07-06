@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    {% include "crontab_manager/header.html" %}    
+    {% include "django_crontab_manager/header.html" %}    
     <div class="ui main container" style="position: relative;">
         {% if messages %}        
             {% for message in messages %}
@@ -23,7 +23,7 @@
             {% endfor %}
         {% endif %}
         {% block content %}{% endblock %}
-        {% include "crontab_manager/footer.html" %}    
+        {% include "django_crontab_manager/footer.html" %}    
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>

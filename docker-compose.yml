@@ -69,8 +69,7 @@ services:
     command: > 
       bash -c "/usr/src/app/wait-for-it todo-postgres:5432 
       && /usr/src/app/start"
-    volumes:
-      - './todo/apps/crontab_manager:/usr/src/app/crontab_manager'
+    volumes:      
       - './todo/apps/django_crontab_manager:/usr/src/app/django_crontab_manager'
       - './todo/apps/task:/usr/src/app/task' 
       - './todo/apps/utils:/usr/src/app/utils'
