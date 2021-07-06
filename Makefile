@@ -11,7 +11,7 @@ up:
 	docker-compose up -d
 
 up-tests:
-	docker-compose -f docker-compose-test.yml up -d
+	docker-compose -f docker-compose-test.yml up --build
 
 down:
 	docker-compose -f docker-compose.yml down --remove-orphans
@@ -29,7 +29,10 @@ e2e-tests: up-tests
 	docker-compose run --rm --no-deps --entrypoint=pytest todo-app ${BASEDIR}/task/tests/e2e
 
 logs:
-	docker-compose logs todo-app | tail -100
+	docker-compose logs -f
+
+logs-tail-100:
+	docker-compose logs todo-app | tail -100	
 
 black:
 	black -l 86 $$(find * -name '*.py')
