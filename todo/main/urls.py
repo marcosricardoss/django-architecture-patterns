@@ -19,6 +19,6 @@ from django.urls import include, path
 
 urlpatterns = [ 
     path("", include("task.urls")), 
-    path("crontab_manager/", include("crontab_manager.urls")), 
+    path("crontab_manager/", include("django_crontab_manager.urls")), 
     path("admin/", admin.site.urls)
 ]
