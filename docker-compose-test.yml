@@ -65,6 +65,8 @@ services:
     restart: always
     command: bash -c "/usr/src/app/start"
     volumes:
+      - './todo/apps/crontab_manager:/usr/src/app/crontab_manager'
+      - './todo/apps/django_crontab_manager:/usr/src/app/django_crontab_manager'
       - './todo/apps/task:/usr/src/app/task' 
       - './todo/apps/utils:/usr/src/app/utils'
       - './todo/data:/usr/src/app/data'
@@ -72,12 +74,12 @@ services:
       - './todo/locale:/usr/src/app/locale'
       - './todo/main:/usr/src/app/main'      
       - './todo/media:/usr/src/app/media'
-      - './todo/static:/usr/src/app/static'
       - './todo/site_static:/usr/src/app/site_static'
+      - './todo/static:/usr/src/app/static'
       - './todo/templates:/usr/src/app/templates'
     ports:
       - '$TODO_SERVICE_SERVICE_PORT:8000'    
-    environment:      
+    environment:            
       DJANGO_USE_DEBUG: $TODO_DJANGO_USE_DEBUG            
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
       NETWORK_APP_URL: http://todo-app:8000

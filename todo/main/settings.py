@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "utils.apps.UtilsConfig",
+    "django_crontab",
+    "crontab_manager",
+    "utils.apps.UtilsConfig",    
     "task.apps.TaskConfig",
 ]
 if os.environ.get("DJANGO_USE_DEBUG_TOOLBAR"):
@@ -186,3 +188,10 @@ STATIC_URL = f"http://{STATIC_DOMAIN}/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_DOMAIN = os.environ.get("MEDIA_HOST")
 MEDIA_URL = f"http://{MEDIA_DOMAIN}/"
+
+
+# Crontab Settings
+CRONJOBS = [
+    ('*/1 * * * *', 'task.services.services.my_scheduled_job'),
+    ('*/2 * * * *', 'task.services.services.my_scheduled_job'),
+]

@@ -1,3 +1,5 @@
+import logging
+
 from typing import Optional, Union
 from datetime import datetime
 
@@ -6,6 +8,7 @@ from django.db import IntegrityError, transaction
 from ..models import Task
 from .unit_of_work import AbstractUnitOfWork
 
+logger = logging.getLogger("django")
 
 class TaskException(Exception):
     pass
@@ -32,3 +35,6 @@ def add_task(
             task.save()
     except IntegrityError as e:
         raise TaskException
+
+def my_scheduled_job():
+    logger.warn(f"My scheduled job")

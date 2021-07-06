@@ -1,0 +1,81 @@
+{% extends 'crontab_manager/base.html' %}
+{% load lookup_dict %}
+{% block content %}
+<h1 class="ui header">CRONJOBS</h1>
+<div class="ui divided items">
+    <h4>FROM SETTINGS</h4>
+    <table class="ui celled table">
+        <thead class="full-width">
+            <tr>
+                <th>No.</th>
+                <th>Job Hash</th>
+                <th>Setting</th>                
+            </tr>
+        </thead>
+        <tbody class="full-width">
+            {% for jobhash,cronjob in settings_cronjobs.items %}
+            <tr>
+                <td data-label="no">{{forloop.counter}}</td>
+                <td data-label="jobhash">{{jobhash}}</td>
+                <td data-label="cronjob"><small>{{cronjob}}</small></td>                
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot class="full-width">
+            <tr>
+                <th></th>
+                <th colspan="4">
+                    <a href="{% url 'crontab_manager:add' %}" class="ui right floated small primary labeled icon button">
+                        {% if running_cronjobs %}
+                        <i class="caret square right icon"></i> Reload                        
+                        {% else %}
+                        <i class="caret square right icon"></i> Run All
+                        {% endif %}
+                    </a>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="ui divided items">
+    <h4>RUNNING</h4>
+    <table class="ui celled table">
+        <thead class="full-width">
+            <tr>
+                <th>No.</th>
+                <th>Job Hash</th>
+                <th>Setting</th>
+                <th>Command</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="full-width">
+            {% for jobhash,cronjob in running_cronjobs.items %}
+            <tr>
+                <td data-label="no">{{forloop.counter}}</td>
+                <td data-label="jobhash">{{jobhash}}</td>
+                <td data-label="cronjob"><small>{{cronjob|lookup_dict:"setting"}}</small></td>
+                <td data-label="cronjob"><small>{{cronjob|lookup_dict:"command"}}</small></td>
+                <td data-label="actions">
+                    <a href="{% url 'crontab_manager:run' jobhash=jobhash %}"
+                        class="ui right floated mini positive labeled icon button">
+                        <i class="caret square right icon"></i> Execute
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot class="full-width">
+            <tr>
+                <th></th>
+                <th colspan="4">
+                    <a href="{% url 'crontab_manager:remove' %}" class="ui right floated small negative labeled icon button">
+                        <i class="user icon"></i> Remove All
+                    </a>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock %}

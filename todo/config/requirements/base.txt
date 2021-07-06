@@ -1,3 +1,5 @@
 Django~=2.1.5
+django-crontab~=0.7.1
 psycopg2-binary~=2.8.5
+python-crontab~=2.5.1
 pytz~=2021.1
