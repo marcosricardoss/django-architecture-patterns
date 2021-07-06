@@ -1,7 +1,7 @@
 FROM python:3.8
 
-RUN apt update
-RUN apt install -y cron
+RUN apt-get update
+RUN aptapt-get install -y cron
 
 # app folders
 WORKDIR /usr/src/app
