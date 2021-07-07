@@ -27,4 +27,4 @@ ADD setup.cfg ./setup.cfg
 # django-crontab-manager test
 RUN pip install python-crontab
 RUN pip install django-crontab
-RUN pip install --index-url https://test.pypi.org/simple/ --no-deps django-crontab-manager
+RUN pip install --index-url https://test.pypi.org/simple/ --no-deps django-crontab-manager==0.0.4
