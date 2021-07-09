@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-import tempfile
 from posixpath import join
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -127,6 +126,11 @@ LOGGING = {
             "level": "DEBUG",
             "propagate": True,
         },
+        'django.template': {
+			'handlers': ['file'],
+			'level': 'INFO',
+			'propagate': True,
+		},
     },
 }
 if DEBUG:
@@ -186,3 +190,6 @@ STATIC_URL = f"http://{STATIC_DOMAIN}/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_DOMAIN = os.environ.get("MEDIA_HOST")
 MEDIA_URL = f"http://{MEDIA_DOMAIN}/"
+
+# Default login page
+LOGIN_URL="/admin/login/"
