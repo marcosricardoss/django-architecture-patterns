@@ -21,14 +21,3 @@ urlpatterns = [
     path("run/<str:jobhash>/", login_required(RunCronJobView.as_view()), name="run"),
     path("run-admin/<str:jobhash>/", login_required(RunCronJobView.as_view()), name="run"),
 ]
-
-
-# urlpatterns = [
-#     path("", CronJobHomeView.as_view(), name="home"),    
-#     path("add/", AddAllCronJobsView.as_view(), name="add"),    
-#     path("add-admin/", AddAllCronJobsAdminView.as_view(), name="add-admin"),    
-#     path("remove/", RemoveAllCronJobsView.as_view(), name="remove"), 
-#     path("remove-admin/", RemoveAllCronJobsAdminView.as_view(), name="remove-admin"),        
-#     path("run/<str:jobhash>/", RunCronJobView.as_view(), name="run"),
-#     path("run-admin/<str:jobhash>/", RunCronJobView.as_view(), name="run"),
-# ]
