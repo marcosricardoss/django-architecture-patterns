@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-import tempfile
-from posixpath import join
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -37,9 +35,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_crontab", 
-    "django_crontab_manager",
-    "utils.apps.UtilsConfig",
-    "task.apps.TaskConfig"
+    "django_crontab_manager",    
+    "utils",
+    "task",
 ]
 if os.environ.get("DJANGO_USE_DEBUG_TOOLBAR"):
     INSTALLED_APPS += ["debug_toolbar"]
@@ -129,6 +127,11 @@ LOGGING = {
             "level": "DEBUG",
             "propagate": True,
         },
+        'django.template': {
+			'handlers': ['file'],
+			'level': 'INFO',
+			'propagate': True,
+		},
     },
 }
 if DEBUG:
@@ -194,3 +197,6 @@ CRONJOBS = [
     ('*/1 * * * *', 'task.services.services.my_scheduled_job'),
     ('*/2 * * * *', 'task.services.services.my_scheduled_job'),
 ]
+
+# Default login page
+LOGIN_URL="/admin/login/"
