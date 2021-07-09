@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-import tempfile
-from posixpath import join
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -129,6 +127,11 @@ LOGGING = {
             "level": "DEBUG",
             "propagate": True,
         },
+        'django.template': {
+			'handlers': ['file'],
+			'level': 'INFO',
+			'propagate': True,
+		},
     },
 }
 if DEBUG:
@@ -195,3 +198,6 @@ CRONJOBS = [
     ('*/1 * * * *', 'task.services.services.my_scheduled_job'),
     ('*/2 * * * *', 'task.services.services.my_scheduled_job'),
 ]
+
+# Default login page
+LOGIN_URL="/admin/login/"
