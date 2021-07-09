@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from posixpath import join
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
