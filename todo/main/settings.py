@@ -34,8 +34,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "utils.apps.UtilsConfig",
-    "task.apps.TaskConfig",
+    "utils",
+    "task",
 ]
 if os.environ.get("DJANGO_USE_DEBUG_TOOLBAR"):
     INSTALLED_APPS += ["debug_toolbar"]
