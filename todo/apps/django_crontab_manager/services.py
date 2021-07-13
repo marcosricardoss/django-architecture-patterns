@@ -2,18 +2,16 @@ import logging
 
 from crontab import CronTab
 
-from django.conf import settings
-from django.core.management import call_command
-
 from django_crontab.crontab import Crontab
 
-from .models import Cronjob
 from .app_settings import CRONJOBS
+from .adapters import AbstractRepository, AbstractExecutor
 
 logger = logging.getLogger("django")
 
+
 def get_cronjob_from_settings():
-    result = {}   
+    result = {}
     for job in CRONJOBS:
         jobhash = Crontab()._Crontab__hash_job(job)
         result[jobhash] = job
@@ -32,21 +30,23 @@ def get_cronjob_running():
     return result
 
 
-def run_cronjob(jobhash):
-    call_command("crontab", "run", jobhash)
+def run_cronjob(jobhash, executor: AbstractExecutor):
+    executor.run(["crontab", "run", jobhash])
 
 
-def add_all_cronjobs():
-    call_command("crontab", "add")
+def add_all_cronjobs(executor: AbstractExecutor):
+    executor.run(["crontab", "add"])
 
 
-def remove_all_cronjobs():
-    call_command("crontab", "remove")
+def remove_all_cronjobs(executor: AbstractExecutor):
+    executor.run(["crontab", "remove"])
 
-def load_cronjobs_to_db():    
-    Cronjob.objects.all().delete()
-    for jobhash, cronjob in get_cronjob_from_settings().items():        
-        Cronjob.objects.get_or_create(jobhash=jobhash, setting=cronjob)
-    
-def debugger_cronjob():
+
+def load_cronjobs_to_db(cronjob_repository: AbstractRepository):
+    cronjob_repository.delete()
+    for jobhash, cronjob in cronjob_repository.list():
+        cronjob_repository.create(jobhash, cronjob)
+
+
+def debugger_cronjob(): # pragma: no cover
     logger.info(f"Running debugger cronjob...")

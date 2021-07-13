@@ -8,6 +8,7 @@ class DjangoCrontabManagerConfig(AppConfig):
     def ready(self):
         try:
             from .services import load_cronjobs_to_db
-            load_cronjobs_to_db()
+            from .adapters import CronjobRepository
+            load_cronjobs_to_db(CronjobRepository)
         except:
             pass

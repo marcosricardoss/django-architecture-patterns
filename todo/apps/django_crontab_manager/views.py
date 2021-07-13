@@ -3,6 +3,7 @@ from django.shortcuts import Http404, HttpResponseRedirect, redirect, render
 from django.urls import reverse
 from django.views import View
 
+from django_crontab_manager.adapters import DjangoExecutor
 from .services import (
     get_cronjob_from_settings,
     get_cronjob_running,
@@ -16,7 +17,7 @@ class CronJobHomeView(View):
 
     template_name = "django_crontab_manager/home.html"
 
-    def get(self, request, *args, **kwargs):        
+    def get(self, request, *args, **kwargs):
         view_context = {
             "settings_cronjobs": get_cronjob_from_settings(),
             "running_cronjobs": get_cronjob_running(),
@@ -27,15 +28,17 @@ class CronJobHomeView(View):
 class RunCronJobView(View):
     def get(self, request, *args, **kwargs):
         jobhash = self.kwargs.get("jobhash")
-        run_cronjob(jobhash)
+        run_cronjob(jobhash, DjangoExecutor())
         messages.success(self.request, f"Running the {jobhash} cronjob")
         return HttpResponseRedirect(reverse("django_crontab_manager:home"))
 
 
-class RunCronJobAdminView(View):
+class RunCronJobAdminView(View):  # pragma: no cover
+    """Not in use yet"""
+
     def get(self, request, *args, **kwargs):
         jobhash = self.kwargs.get("jobhash")
-        run_cronjob(jobhash)
+        run_cronjob(jobhash, DjangoExecutor())
         messages.success(self.request, f"Running the {jobhash} cronjob")
         return HttpResponseRedirect(
             reverse("admin:django_crontab_manager_cronjob_changelist")
@@ -44,7 +47,7 @@ class RunCronJobAdminView(View):
 
 class AddAllCronJobsView(View):
     def get(self, request, *args, **kwargs):
-        add_all_cronjobs()
+        add_all_cronjobs(DjangoExecutor())
         messages.success(
             self.request, f"All cronjobs were removed from execution successfully!"
         )
@@ -53,7 +56,7 @@ class AddAllCronJobsView(View):
 
 class AddAllCronJobsAdminView(View):
     def get(self, request, *args, **kwargs):
-        add_all_cronjobs()
+        add_all_cronjobs(DjangoExecutor())
         messages.success(
             self.request, f"All cronjobs were removed from execution successfully!"
         )
@@ -64,14 +67,14 @@ class AddAllCronJobsAdminView(View):
 
 class RemoveAllCronJobsView(View):
     def get(self, request, *args, **kwargs):
-        remove_all_cronjobs()
+        remove_all_cronjobs(DjangoExecutor())
         messages.success(self.request, f"All cronjobs were removed successfully!")
         return HttpResponseRedirect(reverse("django_crontab_manager:home"))
 
 
 class RemoveAllCronJobsAdminView(View):
     def get(self, request, *args, **kwargs):
-        remove_all_cronjobs()
+        remove_all_cronjobs(DjangoExecutor())
         messages.success(self.request, f"All cronjobs were removed successfully!")
         return HttpResponseRedirect(
             reverse("admin:django_crontab_manager_cronjob_changelist")
