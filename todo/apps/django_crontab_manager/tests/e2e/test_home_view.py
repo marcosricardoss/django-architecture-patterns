@@ -1,3 +1,5 @@
+import html
+
 from crontab import CronTab
 
 from django_crontab_manager.adapters import DjangoExecutor
@@ -14,11 +16,10 @@ def test_view_page_running_all_jobs(admin_client):
     assert response.status_code == 200
     assert response.content.count(b"Reload") == 1
     assert response.content.count(b"Remove All") == 1
-
     # jobs running
     cron = CronTab(user="root")
     for job in cron:
-        assert response.content.count(job.command.encode()) == 1
+        assert response.content.count(html.escape(job.command).encode()) == 1
 
 
 def test_home_view_with_running_any_jobs(admin_client):
