@@ -1,4 +1,4 @@
-def test_run_cronjob_view(admin_client):
+def test_add_cronjob_view(admin_client):
     response = admin_client.get("/crontab_manager/add", follow=True)
     assert response.status_code == 200
     assert response.content.count(b"Success!") == 1
@@ -12,7 +12,7 @@ def test_run_cronjob_view(admin_client):
     assert response.content.count(b"Remove All") == 1
 
 
-def test_run_cronjob_admin_view(admin_client):
+def test_add_cronjob_admin_view(admin_client):
     response = admin_client.get("/crontab_manager/add-admin/", follow=True)
     assert response.status_code == 200
     assert (
