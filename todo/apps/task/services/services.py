@@ -36,5 +36,5 @@ def add_task(
     except IntegrityError as e:
         raise TaskException
 
-def my_scheduled_job():
+def my_scheduled_job(): # pragma: no cover
     logger.warn(f"My scheduled job")
