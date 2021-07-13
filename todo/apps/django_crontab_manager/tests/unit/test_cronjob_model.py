@@ -18,6 +18,7 @@ def test_task_cronjob(dates):
     assert cronjob.setting == "('*/1 * * * *', 'example.services.my_scheduled_job')"
     assert cronjob.created_at >= dates["today"]
     assert cronjob.updated_at >= dates["today"]
+    assert str(cronjob) == cronjob.setting
 
 
 @pytest.mark.django_db

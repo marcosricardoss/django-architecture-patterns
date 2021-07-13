@@ -18,10 +18,10 @@ def dates():
     return {"today": today, "tomorrow": tomorrow, "later": later}
 
 
-# @pytest.fixture
-# def django_db_setup(django_db_setup, django_db_blocker):
-#     with django_db_blocker.unblock():
-#         call_command("loaddata", "dumpdata.json")
+@pytest.fixture
+def django_db_setup(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        call_command("loaddata", "dumpdata.json")
 
 
 @pytest.fixture
