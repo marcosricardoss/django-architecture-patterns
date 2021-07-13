@@ -2,6 +2,7 @@ import logging
 
 from django.contrib import admin, messages
 
+from .adapters import DjangoExecutor
 from .models import Cronjob
 from .services import run_cronjob, get_cronjob_running
 
@@ -11,7 +12,7 @@ logger = logging.getLogger("django")
 def run_action(modeladmin, request, queryset):
     logger.info(f"HttpRequest.method: {request.method}...")    
     for e in queryset:
-        run_cronjob(e.jobhash)
+        run_cronjob(e.jobhash, DjangoExecutor())
         logger.info(f"Running cronjob: {e.jobhash}...")
         messages.success(request, f"Running cronjobs: {e.jobhash}")
 
