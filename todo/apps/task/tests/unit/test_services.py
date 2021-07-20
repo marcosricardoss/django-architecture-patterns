@@ -3,8 +3,31 @@ import pytest
 from django.db import IntegrityError
 
 from task.models import Task
-from task.services import unit_of_work, add_task_service
-from task.services.exceptions import TaskException
+from task.services import unit_of_work
+from task.adapters import AbstractRepository
+from task.exceptions import CreateObjectException
+from task.services import add_task_service
+
+
+class FakeRepository(AbstractRepository):
+    def __init__(self) -> None:
+        self.deleted = False
+        self.created_data = {}
+
+    def create(self, data):
+        self.created_data = data.values()
+
+    def get(self, id):
+        pass
+
+    def update(self, id, data):
+        pass
+
+    def delete(self, id):
+        pass
+
+    def list(self):
+        pass
 
 
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
@@ -23,33 +46,24 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         self.rollbacked = True
 
 
-def test_add_batch(dates, monkeypatch):
-    def save(*args, **kwargs):
-        return
-
-    monkeypatch.setattr(Task, "save", save)
+def test_add_task(dates):    
+    title = "Task Title"
+    description = "Task Description"
+    deadline_at = dates["later"]
+    finished_at = dates["tomorrow"]
+    repository = FakeRepository()
     uow = FakeUnitOfWork()
     add_task_service(
-        title="Task Title",
-        description="Task Description",
-        deadline_at=dates["tomorrow"],
-        finished_at=dates["tomorrow"],
+        title=title,
+        description=description,
+        deadline_at=deadline_at,
+        finished_at=finished_at,
+        repository=repository,
         uow=uow,
     )
-
-
-def test_add_batch_with_exception(dates, monkeypatch):
-    def save(*args, **kwargs):
-        raise IntegrityError()
-
-    monkeypatch.setattr(Task, "save", save)
-    uow = FakeUnitOfWork()
-    with pytest.raises(TaskException):
-        add_task_service(
-            title="Task Title",
-            description="Task Description",
-            deadline_at=dates["tomorrow"],
-            finished_at=dates["tomorrow"],
-            uow=uow,
-        )
-    uow.committed = False
+    assert title in repository.created_data
+    assert description in repository.created_data
+    assert deadline_at in repository.created_data
+    assert finished_at in repository.created_data
+    assert uow.committed == True
+    assert uow.rollbacked == False

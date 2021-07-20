@@ -56,6 +56,7 @@ class TaskCreateRawView(View):
                 form.cleaned_data["description"],
                 form.cleaned_data["deadline_at"],
                 form.cleaned_data["finished_at"],
+                TaskRepository(),
                 transaction.atomic(),
             )
             messages.success(self.request, "Task created successfully!")
