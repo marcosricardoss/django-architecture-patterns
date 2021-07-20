@@ -1,0 +1,12 @@
+<div class="ui fixed inverted menu">
+    <div class="ui container">
+        <a href="{% url 'task:index' %}" class="header item"><i class="tasks icon logo"></i>TODO Application</a>
+        <a href="{% url 'task:index' %}" class="item">Home</a>
+        <div class="ui simple dropdown item">
+            Tasks <i class="dropdown icon"></i>
+            <div class="menu">
+                <a class="item" href="{% url 'task:create' %}">Create</a>                         
+            </div>
+        </div>
+    </div>
+</div>
