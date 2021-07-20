@@ -9,9 +9,9 @@ from django.views import View
 
 from utils.forms import DivErrorList
 
-from ..services import services
-from ..repositories import TaskRepository
-from ..forms import TaskForm
+from task.services import add_task_service
+from task.adapters import TaskRepository
+from task.forms import TaskForm
 
 
 class TaskObjectMixin(object):
@@ -51,7 +51,7 @@ class TaskCreateRawView(View):
         # POST method
         form = TaskForm(request.POST, error_class=DivErrorList)
         if form.is_valid():
-            services.add_task(
+            add_task_service(
                 form.cleaned_data["title"],
                 form.cleaned_data["description"],
                 form.cleaned_data["deadline_at"],

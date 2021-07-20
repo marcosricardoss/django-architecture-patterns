@@ -3,10 +3,8 @@
 from django.urls import reverse
 from django.shortcuts import Http404, HttpResponseRedirect, get_object_or_404, render
 
-from utils.forms import DivErrorList
-
-from ..forms import TaskForm, RawTaskForm
-from ..models import Task
+from task.forms import TaskForm, RawTaskForm
+from task.models import Task
 
 
 def list_view(request, *args, **kwargs):  # pragma: no cover

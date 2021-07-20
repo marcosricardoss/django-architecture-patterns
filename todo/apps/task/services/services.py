@@ -5,12 +5,12 @@ from django.db import IntegrityError, transaction
 
 from ..models import Task
 from .unit_of_work import AbstractUnitOfWork
+from .exceptions import TaskException
+from . import messagebus
+from . import events
 
 
-class TaskException(Exception):
-    pass
-
-def add_task(
+def add_task_service(
     title: str,
     description: str,
     deadline_at: datetime,
@@ -30,5 +30,6 @@ def add_task(
             task.deadline_at = deadline_at
             task.finished_at = finished_at
             task.save()
+            messagebus.handle(events.TaskCreated(title, deadline_at))
     except IntegrityError as e:
-        raise TaskException
+        raise TaskException(f"Error saving task to database: {e}")

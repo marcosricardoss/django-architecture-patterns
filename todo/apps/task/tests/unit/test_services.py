@@ -3,7 +3,8 @@ import pytest
 from django.db import IntegrityError
 
 from task.models import Task
-from task.services import unit_of_work, services
+from task.services import unit_of_work, add_task_service
+from task.services.exceptions import TaskException
 
 
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
@@ -28,7 +29,7 @@ def test_add_batch(dates, monkeypatch):
 
     monkeypatch.setattr(Task, "save", save)
     uow = FakeUnitOfWork()
-    services.add_task(
+    add_task_service(
         title="Task Title",
         description="Task Description",
         deadline_at=dates["tomorrow"],
@@ -43,8 +44,8 @@ def test_add_batch_with_exception(dates, monkeypatch):
 
     monkeypatch.setattr(Task, "save", save)
     uow = FakeUnitOfWork()
-    with pytest.raises(services.TaskException):
-        services.add_task(
+    with pytest.raises(TaskException):
+        add_task_service(
             title="Task Title",
             description="Task Description",
             deadline_at=dates["tomorrow"],

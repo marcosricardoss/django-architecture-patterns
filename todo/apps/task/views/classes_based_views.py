@@ -1,7 +1,6 @@
 """ Classes based Views """
 
 from django.urls import reverse
-from django.views import View
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -11,8 +10,8 @@ from django.views.generic import (
 )
 from django.shortcuts import get_object_or_404, HttpResponseRedirect, Http404
 
-from ..forms import TaskForm
-from ..models import Task
+from task.forms import TaskForm
+from task.models import Task
 
 
 class TaskListView(ListView):  # pragma: no cover
