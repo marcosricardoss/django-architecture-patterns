@@ -1,25 +1,5 @@
 version: '3'
 services:    
-  # TODO STATIC SERVER       
-  todo-static-debugger:
-    container_name: todo-static-debugger
-    image: 'httpd:latest'
-    logging: { driver: none }    
-    networks: [todo-debugger]
-    ports: ['1001:80']
-    restart: always
-    volumes: ['./todo/static:/usr/local/apache2/htdocs']    
-
-  # TODO MEDIA SERVER
-  todo-media-debugger:
-    container_name: todo-media-debugger
-    image: 'httpd:latest'
-    logging: { driver: none }    
-    networks: [todo-debugger]
-    ports: ['1002:80']
-    restart: always
-    volumes: ['./todo/static:/usr/local/apache2/htdocs']    
-      
   # TODO APP
   todo-app-debugger:
     build:
@@ -34,9 +14,7 @@ services:
     restart: always
     environment:      
       DJANGO_USE_DEBUG: 1
-      SECRET_KEY: development      
-      MEDIA_HOST: 'localhost:1001'
-      STATIC_HOST: 'localhost:1002'
+      SECRET_KEY: development            
 
     volumes:
       - './todo/apps/task:/usr/src/app/task' 
