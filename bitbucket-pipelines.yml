@@ -1,0 +1,52 @@
+image: python:3.8
+
+definitions:
+  services:
+    # SELENIUM REMOTE WEBDRIVER
+    project-selenium:
+      image: "selenium/standalone-chrome:4.0.0-rc-1-prerelease-20210618"
+      variables:
+        SE_NODE_MAX_SESSIONS: "4"
+        SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
+
+    # TODO APP E2E TESTER
+    todo-app:
+      image: marcosricardoss/todoapp-service:0.0.0
+      variables:
+        DJANGO_USE_DEBUG: "1"
+        SECRET_KEY: "jrt##n#p)m$l#$hfd@-!7mv079)uot%%jbpemwvnhm7&*7r)^n"
+
+pipelines:
+  default:
+    - step:
+        name: TODO Pull Docker Service        
+        script:
+          - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+          - docker build -t marcosricardoss/todoapp-service:0.0.0 -f todo/Dockerfile.service todo/
+          - docker push marcosricardoss/todoapp-service:0.0.0
+        condition:
+          changesets:
+            includePaths:
+              - "todo/**"
+        services:
+          - docker
+
+    - step:
+        name: TODO App Test
+        deployment: test
+        caches:
+          - pip
+        script:
+          - export DJANGO_USE_DEBUG=1
+          - export TESTER_APP_APP_URL=http://todo-app:8000
+          - export SECRET_KEY="jrt##n#p)m$l#$hfd@-!7mv079)uot%%jbpemwvnhm7&*7r)^n"
+          - export SELENIUM_URL=http://project-selenium:4444          
+          - pushd todo
+          - bash pipeline-builder
+          - coverage run -m pytest
+          - coverage html
+        services:
+          - project-selenium
+          - todo-app
+        artifacts:
+          - htmlcov/**
