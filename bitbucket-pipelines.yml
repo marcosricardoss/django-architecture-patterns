@@ -19,7 +19,7 @@ definitions:
 pipelines:
   default:
     - step:
-        name: TODO Pull Docker Service        
+        name: TODO Pull Docker Service
         script:
           - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
           - docker build -t marcosricardoss/todoapp-service:0.0.0 -f todo/Dockerfile.service todo/
@@ -40,7 +40,7 @@ pipelines:
           - export DJANGO_USE_DEBUG=1
           - export TESTER_APP_APP_URL=http://todo-app:8000
           - export SECRET_KEY="jrt##n#p)m$l#$hfd@-!7mv079)uot%%jbpemwvnhm7&*7r)^n"
-          - export SELENIUM_URL=http://project-selenium:4444          
+          - export SELENIUM_URL=http://localhost:4444          
           - pushd todo
           - bash pipeline-builder
           - coverage run -m pytest
