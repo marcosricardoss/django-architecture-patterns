@@ -17,6 +17,7 @@ RUN pip install -r requirements/$BUILD_ENV.txt
 ADD wait-for-it ./wait-for-it
 ADD manage.py ./manage.py
 ADD start ./start
+ADD pipeline-builder ./pipeline-builder
 
 # tests setup
 ADD setup.cfg ./setup.cfg
