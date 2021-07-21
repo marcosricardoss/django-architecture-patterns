@@ -38,7 +38,7 @@ pipelines:
           - pip
         script:
           - export DJANGO_USE_DEBUG=1
-          - export TESTER_APP_APP_URL=http://todo-app:8000
+          - export TESTER_APP_APP_URL=http://localhost:8000
           - export SECRET_KEY="jrt##n#p)m$l#$hfd@-!7mv079)uot%%jbpemwvnhm7&*7r)^n"
           - export SELENIUM_URL=http://localhost:4444          
           - pushd todo
