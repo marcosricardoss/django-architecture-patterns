@@ -3,7 +3,7 @@ import pytest
 
 from selenium.webdriver.common.keys import Keys
 
-APP_URL = os.environ.get("NETWORK_APP_URL")
+APP_URL = os.environ.get("TESTER_APP_APP_URL")
 
 
 @pytest.mark.django_db

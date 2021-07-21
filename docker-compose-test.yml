@@ -78,13 +78,13 @@ services:
     ports:
       - '$TODO_SERVICE_SERVICE_PORT:8000'    
     environment:      
-      DJANGO_USE_DEBUG: $TODO_DJANGO_USE_DEBUG            
+      DJANGO_USE_DEBUG: "1"
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
-      NETWORK_APP_URL: http://todo-app:8000
       SECRET_KEY: $SECRET_KEY
       SELENIUM_URL: http://project-selenium:4444
       SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"      
       STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"
+      TESTER_APP_APP_URL: http://todo-app:8000
       VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       VIRTUAL_PORT: 8000          
     depends_on:
