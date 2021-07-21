@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+apt update        
+pip install --upgrade pip
+pip install -r config/requirements/development.txt                    
+mv apps/* . 
+python manage.py migrate
+
+exit 0
