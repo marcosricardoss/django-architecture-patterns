@@ -23,7 +23,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.environ.get("DJANGO_USE_DEBUG") else False
 
-ALLOWED_HOSTS = ["localhost", os.environ.get("SITE_HOST")]
+ALLOWED_HOSTS = ["localhost"]
+if os.environ.get("SITE_HOST"):
+    ALLOWED_HOSTS += [os.environ.get("SITE_HOST")]
 if DEBUG:
     ALLOWED_HOSTS += ["*"]
 
@@ -177,18 +179,24 @@ LOCALE_PATHS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "site_static"),
 ]
-# Static server for deployment with Nginx
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATIC_DOMAIN = os.environ.get("STATIC_HOST")
-STATIC_URL = f"http://{STATIC_DOMAIN}/"
+# external static server
+if os.environ.get('STATIC_HOST'):
+    STATIC_DOMAIN = os.environ.get("STATIC_HOST")
+    STATIC_URL = f"http://{STATIC_DOMAIN}/"
+    
 
-# Media server for deployment with Nginx
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_DOMAIN = os.environ.get("MEDIA_HOST")
-MEDIA_URL = f"http://{MEDIA_DOMAIN}/"
+# external media server
+if os.environ.get('MEDIA_HOST'):
+    MEDIA_DOMAIN = os.environ.get("MEDIA_HOST")
+    MEDIA_URL = f"http://{MEDIA_DOMAIN}/"
 
 # Default login page
 LOGIN_URL="/admin/login/"
