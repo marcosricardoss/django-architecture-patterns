@@ -3,7 +3,7 @@ export DOCKER_BUILDKIT=1
 BASEDIR=/usr/src/app
 
 deploy: down build up
-dev: dev-down dev-build dev-up test dev-down
+dev: down dev-build dev-up test down
 
 build:
 	docker-compose build
@@ -19,9 +19,6 @@ dev-build:
 
 dev-up: dev-build
 	docker-compose -f docker-compose-dev.yml up -d
-
-dev-down:
-	docker-compose -f docker-compose-dev.yml down --remove-orphans
 
 test: 	
 	docker exec todo-app coverage run -m pytest
