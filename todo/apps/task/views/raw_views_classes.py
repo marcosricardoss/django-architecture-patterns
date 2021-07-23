@@ -9,7 +9,7 @@ from django.views import View
 
 from utils.forms import DivErrorList
 
-from task.services import add_task_service
+from task.services import add_task_service, update_task_service
 from task.adapters import TaskRepository
 from task.forms import TaskForm
 
@@ -82,7 +82,15 @@ class TaskUpdateRawView(TaskObjectMixin, View):
         obj = self.get_object()
         form = TaskForm(request.POST, instance=obj, error_class=DivErrorList)
         if form.is_valid():
-            form.save()
+            update_task_service(
+                obj.id,
+                form.cleaned_data["title"],
+                form.cleaned_data["description"],
+                form.cleaned_data["deadline_at"],
+                form.cleaned_data["finished_at"],
+                TaskRepository(),
+                transaction.atomic(),
+            )            
             messages.success(self.request, "Task updated successfully!")
         return HttpResponseRedirect(reverse("task:detail", kwargs={"id": obj.id}))
 

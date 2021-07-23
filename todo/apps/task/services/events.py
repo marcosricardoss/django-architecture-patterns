@@ -10,3 +10,9 @@ class Event:
 class TaskCreated(Event):
     title: str    
     deadline_at: datetime
+
+@dataclass
+class TaskUpdated(Event):
+    title: str    
+    deadline_at: datetime
+    updated_at: datetime
