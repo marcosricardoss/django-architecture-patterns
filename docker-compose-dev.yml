@@ -61,7 +61,7 @@ services:
     build:
       context: ./todo
       args:
-        BUILD_ENV: $ENV
+        BUILD_ENV: development
     restart: always
     command: bash -c "/usr/src/app/start"
     volumes:
@@ -86,7 +86,7 @@ services:
       STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"
       TESTER_APP_APP_URL: http://todo-app:8000
       VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
-      VIRTUAL_PORT: 8000          
+      VIRTUAL_PORT: 8000
     depends_on:
     - projec-proxy       
     - project-selenium
