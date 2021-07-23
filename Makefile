@@ -2,7 +2,8 @@ export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
 BASEDIR=/usr/src/app
 
-all: down build up test
+deploy: down build up
+dev: dev-down dev-build dev-up test dev-down
 
 build:
 	docker-compose build
@@ -10,23 +11,21 @@ build:
 up:
 	docker-compose up -d
 
-up-tests:
-	docker-compose -f docker-compose-test.yml up --build
-
 down:
 	docker-compose -f docker-compose.yml down --remove-orphans
 
-test: up-tests
-	docker-compose run --rm --no-deps --entrypoint=pytest todo-app	
+dev-build:
+	docker-compose -f docker-compose-dev.yml build
 
-unit-tests:
-	docker-compose run --rm --no-deps --entrypoint=pytest todo-app ${BASEDIR}/task/tests/unit/
+dev-up: dev-build
+	docker-compose -f docker-compose-dev.yml up -d
 
-integration-tests: up-tests
-	docker-compose run --rm --no-deps --entrypoint=pytest todo-app ${BASEDIR}/task/tests/integration
+dev-down:
+	docker-compose -f docker-compose-dev.yml down --remove-orphans
 
-e2e-tests: up-tests
-	docker-compose run --rm --no-deps --entrypoint=pytest todo-app ${BASEDIR}/task/tests/e2e
+test: 	
+	docker exec todo-app coverage run -m pytest
+	docker exec todo-app coverage html	
 
 logs:
 	docker-compose logs -f
