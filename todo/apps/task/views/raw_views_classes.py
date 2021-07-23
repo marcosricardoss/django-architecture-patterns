@@ -9,7 +9,7 @@ from django.views import View
 
 from utils.forms import DivErrorList
 
-from task.services import add_task_service, update_task_service
+from task.services import add_task_service, update_task_service, detele_task_service
 from task.adapters import TaskRepository
 from task.forms import TaskForm
 
@@ -107,7 +107,9 @@ class TaskDeleteRawView(TaskObjectMixin, View):
     def post(self, request, id=None, *args, **kwargs):
         # POST method
         obj = self.get_object()
-        obj.delete()
+        detele_task_service(obj.id, 
+                            TaskRepository(),
+                            transaction.atomic())        
         messages.success(self.request, "Task deleted successfully!")
         return HttpResponseRedirect(reverse("task:index"))
 

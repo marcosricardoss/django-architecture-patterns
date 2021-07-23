@@ -2,8 +2,8 @@ from typing import Optional, Union
 from datetime import datetime
 
 from django.db import transaction
+from django.utils import timezone
 
-from task.models import Task
 from task.adapters import AbstractRepository
 from .unit_of_work import AbstractUnitOfWork
 from . import messagebus
@@ -62,4 +62,20 @@ def update_task_service(
             data = defaults
         )
         messagebus.handle(events.TaskUpdated(title, deadline_at, obj.updated_at))
+
+
+def detele_task_service(
+    id: int,    
+    repository: AbstractRepository,
+    uow: Union[AbstractUnitOfWork, transaction.Atomic],
+):
+
+    """Example of using an Unit of Work in a service layer. We could put code
+    here that is not directly linked to a domain model, such as accessing an external API.
+    The purpose of a UOW is to guarantee the atomicity and integrity of information in the database."""
+    
+    with uow:
+        repository.delete(id)
+        messagebus.handle(events.TaskDeleted(id=id, deleted_at=timezone.now()))
+            
     

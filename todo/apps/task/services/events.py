@@ -16,3 +16,8 @@ class TaskUpdated(Event):
     title: str    
     deadline_at: datetime
     updated_at: datetime
+
+@dataclass
+class TaskDeleted(Event):
+    id: int
+    deleted_at: datetime
