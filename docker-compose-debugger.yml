@@ -1,19 +1,21 @@
 version: '3'
 services:    
   # REDIS
-  project-redis:
+  project-redis-debugger:
     image: redis:latest
-    container_name: project-redis
+    container_name: project-redis-debugger
+    networks: [todo-debugger]
     restart: always    
     ports: ["${REDIS_SERVICE_PORT}:6379"]
 
   # REDIS COMMANDER
-  project-redis-commander:
-    container_name: project-redis-commander
-    depends_on: [project-redis]
+  project-redis-commander-debugger:
+    container_name: project-redis-commander-debugger
+    depends_on: [project-redis-debugger]
     hostname: redis-commander
     image: rediscommander/redis-commander:latest
     logging: { driver: none }
+    networks: [todo-debugger]
     ports: ["8081:8081"]
     restart: always
     environment:
@@ -23,6 +25,7 @@ services:
   todo-app-eventconsumer-debugger:    
     image: 'todo-app:latest'
     container_name: todo-app-eventconsumer-debugger    
+    networks: [todo-debugger]
     restart: always
     command: > 
       bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
@@ -36,11 +39,10 @@ services:
       DJANGO_USE_DEBUG: 1
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
       PYTHONUNBUFFERED: 1      
-      REDIS_HOST: project-redis
+      REDIS_HOST: project-redis-debugger
       REDIS_PORT: 6379
       SECRET_KEY: $SECRET_KEY            
-      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"            
-    depends_on: [project-redis]      
+      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"                
 
   # TODO APP
   todo-app-debugger:    
