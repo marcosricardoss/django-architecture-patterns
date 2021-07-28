@@ -127,6 +127,11 @@ LOGGING = {
             "level": "DEBUG",
             "propagate": True,
         },
+        'django.db.backends': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
         'django.template': {
 			'handlers': ['file'],
 			'level': 'INFO',
@@ -200,3 +205,11 @@ if os.environ.get('MEDIA_HOST'):
 
 # Default login page
 LOGIN_URL="/admin/login/"
+
+
+# Redis 
+REDIS_CONFIG = {
+    "host": os.environ.get("REDIS_HOST"),
+    "port": int(os.environ.get("REDIS_PORT")),
+    "db": 0,
+}

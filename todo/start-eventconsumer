@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Performing database migration
+python manage.py migrate
+
+# Starting event consumer
+python -u eventconsumer.py

@@ -1,33 +1,58 @@
 version: '3'
 services:    
+  # REDIS
+  project-redis:
+    image: redis:latest
+    container_name: project-redis
+    restart: always    
+    ports: ["${REDIS_SERVICE_PORT}:6379"]
+
+  # REDIS COMMANDER
+  project-redis-commander:
+    container_name: project-redis-commander
+    depends_on: [project-redis]
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    logging: { driver: none }
+    ports: ["8081:8081"]
+    restart: always
+    environment:
+      REDIS_HOSTS: local:project-redis:6379
+
+  # TODO EVENT CONSUMER
+  todo-app-eventconsumer-debugger:    
+    image: 'todo-app:latest'
+    container_name: todo-app-eventconsumer-debugger    
+    restart: always
+    command: > 
+      bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
+      /usr/src/app/start-eventconsumer"
+    volumes: &todo-app-volumes      
+      - './todo/apps/task:/usr/src/app/task' 
+      - './todo/apps/utils:/usr/src/app/utils'      
+      - './todo:/usr/src/app'
+      - ./.vscode:/usr/src/app/.vscode
+    environment: &todo-app-environment
+      DJANGO_USE_DEBUG: 1
+      MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
+      PYTHONUNBUFFERED: 1      
+      REDIS_HOST: project-redis
+      REDIS_PORT: 6379
+      SECRET_KEY: $SECRET_KEY            
+      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"            
+    depends_on: [project-redis]      
+
   # TODO APP
-  todo-app-debugger:
-    build:
-      context: ./todo
-      args:
-        BUILD_ENV: development
-    image: 'todo-app-debugger:latest'
+  todo-app-debugger:    
+    image: 'todo-app:latest'
     container_name: todo-app-debugger    
     command: bash -c "/usr/src/app/start"    
     networks: [todo-debugger]
     ports: ['9999:8000']
     restart: always
-    environment:      
-      DJANGO_USE_DEBUG: 1
-      SECRET_KEY: development            
-
-    volumes:
-      - './todo/apps/task:/usr/src/app/task' 
-      - './todo/apps/utils:/usr/src/app/utils'
-      - './todo/data:/usr/src/app/data'
-      - './todo/htmlcov:/usr/src/app/htmlcov'
-      - './todo/locale:/usr/src/app/locale'
-      - './todo/main:/usr/src/app/main'      
-      - './todo/media:/usr/src/app/media'
-      - './todo/site_static:/usr/src/app/site_static'
-      - './todo/static:/usr/src/app/static'
-      - './todo/templates:/usr/src/app/templates'
-      - './.vscode:/usr/src/app/.vscode'
+    volumes: *todo-app-volumes
+    environment: *todo-app-environment
+    depends_on: [todo-app-eventconsumer-debugger]      
 
 networks:      
   todo-debugger:      

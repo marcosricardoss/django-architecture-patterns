@@ -4,7 +4,7 @@ from datetime import datetime
 from django.db import transaction
 from django.utils import timezone
 
-from task.adapters import AbstractRepository
+from task.adapters import AbstractRepository, eventpublisher
 from .unit_of_work import AbstractUnitOfWork
 from . import messagebus
 from . import events
@@ -30,10 +30,11 @@ def add_task_service(
         "finished_at": finished_at
     }
     with uow:
-        repository.create(
-            data = defaults
-        )
-        messagebus.handle(events.TaskCreated(title, deadline_at))
+        repository.create(data = defaults)
+        event = events.TaskCreated(title, deadline_at)
+        messagebus.handle(event)
+        eventpublisher.publish("task_created_event", event)
+        
     
 
 def update_task_service(

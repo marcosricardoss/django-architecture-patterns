@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Performing database migration
-python manage.py migrate
-
 # Running the Flask application
 if [ "$ENV" = "development" ] || [ "$ENV" = "testing" ]
 then  

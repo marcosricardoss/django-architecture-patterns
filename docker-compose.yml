@@ -20,6 +20,13 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
       PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
+
+  # REDIS
+  project-redis:
+    image: redis:latest
+    container_name: project-redis
+    restart: always    
+    ports: ["${REDIS_SERVICE_PORT}:6379"]
   
   # TODO POSTGRE DATABASE
   todo-postgres:
@@ -56,31 +63,24 @@ services:
     ports: ['80']
     restart: always
     volumes: [./todo/media:/usr/local/apache2/htdocs']
-  
-  # TODO APP
-  todo-app:
-    ports: ['$TODO_SERVICE_SERVICE_PORT:8000']
+
+  # TODO EVENT CONSUMER
+  todo-app-eventconsumer:    
     image: 'todo-app:latest'
-    container_name: todo-app
+    container_name: todo-app-eventconsumer
     build:
       context: ./todo
       args: { BUILD_ENV: $ENV }
     restart: always
     command: > 
       bash -c "/usr/src/app/wait-for-it todo-postgres:5432 
-      && /usr/src/app/start"
-    volumes:
+      && /usr/src/app/wait-for-it project-redis:6379 
+      && /usr/src/app/start-eventconsumer"
+    volumes: &todo-app-volumes      
       - './todo/apps/task:/usr/src/app/task' 
-      - './todo/apps/utils:/usr/src/app/utils'
-      - './todo/data:/usr/src/app/data'
-      - './todo/htmlcov:/usr/src/app/htmlcov'
-      - './todo/locale:/usr/src/app/locale'
-      - './todo/main:/usr/src/app/main'      
-      - './todo/media:/usr/src/app/media'
-      - './todo/static:/usr/src/app/static'
-      - './todo/site_static:/usr/src/app/site_static'
-      - './todo/templates:/usr/src/app/templates'
-    environment:
+      - './todo/apps/utils:/usr/src/app/utils'      
+      - './todo:/usr/src/app'
+    environment: &todo-app-environment
       DJANGO_USE_DEBUG: $TODO_DJANGO_USE_DEBUG
       DJANGO_USE_DEBUG_TOOLBAR: $TODO_DJANGO_USE_DEBUG_TOOLBAR      
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
@@ -88,15 +88,30 @@ services:
       POSTGRESQL_HOST: "todo-postgres"
       POSTGRESQL_PASSWORD: $TODO_POSTGRES_SERVICE_PASSWORD
       POSTGRESQL_PORT: $TODO_POSTGRES_SERVICE_PORT
-      POSTGRESQL_USER: $TODO_POSTGRES_SERVICE_USER
-      SECRET_KEY: $SECRET_KEY
+      POSTGRESQL_USER: $TODO_POSTGRES_SERVICE_USER      
+      PYTHONUNBUFFERED: 1      
+      REDIS_HOST: project-redis
+      REDIS_PORT: 6379
+      SECRET_KEY: $SECRET_KEY      
+      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"            
+    depends_on: [projec-proxy, project-redis]
+  
+  # TODO APP
+  todo-app:
+    ports: ['$TODO_SERVICE_SERVICE_PORT:8000']
+    image: 'todo-app:latest'
+    container_name: todo-app    
+    command: > 
+      bash -c "/usr/src/app/wait-for-it todo-postgres:5432 
+      && /usr/src/app/wait-for-it project-redis:6379 
+      && /usr/src/app/start"
+    volumes: *todo-app-volumes
+    environment:      
+      <<: *todo-app-environment
       SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"      
-      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"
       VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       VIRTUAL_PORT: 8000   
-    depends_on:      
-      - projec-proxy   
-      - todo-postgres
+    depends_on: [projec-proxy, todo-postgres, todo-app-eventconsumer]    
   
 volumes:    
   todo:         

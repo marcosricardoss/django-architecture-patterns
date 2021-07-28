@@ -4,6 +4,7 @@ services:
   project-selenium:
     container_name: project-selenium
     image: "selenium/standalone-chrome:4.0.0-rc-1-prerelease-20210618"
+    logging: { driver: none }
     ports: [4444:4444]
     restart: always
     volumes: [/dev/shm:/dev/shm]
@@ -19,6 +20,25 @@ services:
     ports: ["${PROXY_SERVICE_PORT}:80"]
     restart: always
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
+
+  # REDIS
+  project-redis:
+    image: redis:latest
+    container_name: project-redis
+    restart: always    
+    ports: ["${REDIS_SERVICE_PORT}:6379"]
+
+  # REDIS COMMANDER
+  project-redis-commander:
+    container_name: project-redis-commander
+    depends_on: [project-redis]
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    logging: { driver: none }
+    ports: ["8081:8081"]
+    restart: always
+    environment:
+      REDIS_HOSTS: local:project-redis:6379
 
   # TODO COVERAGE SERVER       
   todo-coverage:
@@ -54,39 +74,46 @@ services:
     depends_on: [projec-proxy]
     environment:
       - 'VIRTUAL_HOST=${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}'  
+
+  # TODO EVENT CONSUMER
+  todo-app-eventconsumer:    
+    image: 'todo-app:latest'
+    container_name: todo-app-eventconsumer
+    build:
+      context: ./todo
+      args: { BUILD_ENV: $ENV }
+    restart: always
+    command: > 
+      bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
+      /usr/src/app/start-eventconsumer"
+    volumes: &todo-app-volumes      
+      - './todo/apps/task:/usr/src/app/task' 
+      - './todo/apps/utils:/usr/src/app/utils'      
+      - './todo:/usr/src/app'
+    environment: &todo-app-environment
+      DJANGO_USE_DEBUG: 1
+      MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
+      PYTHONUNBUFFERED: 1      
+      REDIS_HOST: project-redis
+      REDIS_PORT: 6379
+      SECRET_KEY: $SECRET_KEY            
+      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"            
+    depends_on: [projec-proxy, project-redis]
       
   # TODO APP
   todo-app:
     container_name: todo-app
-    build:
-      context: ./todo
-      args:
-        BUILD_ENV: development
+    image: 'todo-app:latest'
     restart: always
     command: bash -c "/usr/src/app/start"
-    volumes:
-      - './todo/apps/task:/usr/src/app/task' 
-      - './todo/apps/utils:/usr/src/app/utils'
-      - './todo/data:/usr/src/app/data'
-      - './todo/htmlcov:/usr/src/app/htmlcov'
-      - './todo/locale:/usr/src/app/locale'
-      - './todo/main:/usr/src/app/main'      
-      - './todo/media:/usr/src/app/media'
-      - './todo/static:/usr/src/app/static'
-      - './todo/site_static:/usr/src/app/site_static'
-      - './todo/templates:/usr/src/app/templates'
+    volumes: *todo-app-volumes
     ports:
       - '$TODO_SERVICE_SERVICE_PORT:8000'    
     environment:      
-      DJANGO_USE_DEBUG: "1"
-      MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
-      SECRET_KEY: $SECRET_KEY
-      SELENIUM_URL: http://project-selenium:4444
+      <<: *todo-app-environment
       SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"      
-      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"
+      SELENIUM_URL: http://project-selenium:4444
       TESTER_APP_APP_URL: http://todo-app:8000
       VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       VIRTUAL_PORT: 8000
-    depends_on:
-    - projec-proxy       
-    - project-selenium
+    depends_on: [projec-proxy, project-selenium, todo-app-eventconsumer]
