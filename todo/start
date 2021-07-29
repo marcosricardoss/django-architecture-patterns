@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Running the Flask application
 if [ "$ENV" = "development" ] || [ "$ENV" = "testing" ]
 then  
   python manage.py runserver 0.0.0.0:8000

@@ -1,13 +1,28 @@
+
+import json
+
 from typing import Optional, Union
 from datetime import datetime
+from dataclasses import asdict
+
+from eventprocessor import EventPublisher
+from eventprocessor.utils import get_channel_name
+from eventprocessor.topics import Topic
+from eventprocessor.actions import Action
 
 from django.db import transaction
 from django.utils import timezone
 
-from task.adapters import AbstractRepository, eventpublisher
+from task.adapters import AbstractRepository
 from .unit_of_work import AbstractUnitOfWork
 from . import messagebus
 from . import events
+
+
+def dumphandler(x):  # pragma: no cover
+    if isinstance(x, datetime):
+        return x.isoformat()
+    raise TypeError("Unknown type")
 
 
 def add_task_service(
@@ -32,9 +47,14 @@ def add_task_service(
     with uow:
         repository.create(data = defaults)
         event = events.TaskCreated(title, deadline_at)
-        messagebus.handle(event)
-        eventpublisher.publish("task_created_event", event)
         
+        # message bus
+        messagebus.handle(event)
+
+        # external message processor        
+        data = json.dumps(asdict(event), default=dumphandler)
+        channel = get_channel_name(Topic.TASK, Action.CREATED)
+        EventPublisher().publish(channel, data)        
     
 
 def update_task_service(

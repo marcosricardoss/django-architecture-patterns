@@ -13,11 +13,4 @@ RUN pip install --upgrade pip
 RUN pip install --default-timeout=100 future
 RUN pip install -r requirements/$BUILD_ENV.txt
 
-# scripts
-ADD wait-for-it ./wait-for-it
-ADD manage.py ./manage.py
-ADD start ./start
-ADD pipeline-builder ./pipeline-builder
-
-# tests setup
-ADD setup.cfg ./setup.cfg
+ENV PYTHONPATH /eventprocessor

@@ -76,16 +76,16 @@ services:
       - 'VIRTUAL_HOST=${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}'  
 
   # TODO EVENT CONSUMER
-  todo-app-eventconsumer:    
+  todo-app-eventprocessor:    
     image: 'todo-app:latest'
-    container_name: todo-app-eventconsumer
+    container_name: todo-app-eventprocessor
     build:
       context: ./todo
       args: { BUILD_ENV: $ENV }
     restart: always
     command: > 
       bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
-      /usr/src/app/start-eventconsumer"
+      /usr/src/app/start-eventprocessor"
     volumes: &todo-app-volumes      
       - './todo/apps/task:/usr/src/app/task' 
       - './todo/apps/utils:/usr/src/app/utils'      
@@ -116,4 +116,4 @@ services:
       TESTER_APP_APP_URL: http://todo-app:8000
       VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       VIRTUAL_PORT: 8000
-    depends_on: [projec-proxy, project-selenium, todo-app-eventconsumer]
+    depends_on: [projec-proxy, project-selenium, todo-app-eventprocessor]

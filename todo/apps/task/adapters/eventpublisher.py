@@ -14,12 +14,12 @@ config = getattr(settings, "REDIS_CONFIG")
 r = Redis(**config)
 
 
-def dump_handler(x): # pragma: no cover
+def dump_handler(x):  # pragma: no cover
     if isinstance(x, datetime):
         return x.isoformat()
     raise TypeError("Unknown type")
 
 
 def publish(channel, event: events.Event):
-    logging.debug("publishing: channel=%s, event=%s", channel, event)
+    logging.debug(f"publishing: channel={channel}, event={event}")
     r.publish(channel, json.dumps(asdict(event), default=dump_handler))

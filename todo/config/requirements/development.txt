@@ -7,4 +7,5 @@ pytest-django
 pytest-mock
 pytest-mypy
 selenium
+watchdog[watchmedo]~=0.10.3
 webdriver-manager

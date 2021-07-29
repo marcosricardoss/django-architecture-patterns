@@ -22,14 +22,14 @@ services:
       REDIS_HOSTS: local:project-redis:6379
 
   # TODO EVENT CONSUMER
-  todo-app-eventconsumer-debugger:    
+  todo-app-eventprocessor-debugger:    
     image: 'todo-app:latest'
-    container_name: todo-app-eventconsumer-debugger    
+    container_name: todo-app-eventprocessor-debugger    
     networks: [todo-debugger]
     restart: always
     command: > 
       bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
-      /usr/src/app/start-eventconsumer"
+      /usr/src/app/start-eventprocessor"
     volumes: &todo-app-volumes      
       - './todo/apps/task:/usr/src/app/task' 
       - './todo/apps/utils:/usr/src/app/utils'      
@@ -54,7 +54,7 @@ services:
     restart: always
     volumes: *todo-app-volumes
     environment: *todo-app-environment
-    depends_on: [todo-app-eventconsumer-debugger]      
+    depends_on: [todo-app-eventprocessor-debugger]      
 
 networks:      
   todo-debugger:      
