@@ -1,25 +1,21 @@
+
 import logging
 
-from redis import Redis
-from django.conf import settings
+from .adapters import broker
 
 logger = logging.getLogger("eventprocessor")
 
-# redis conection
-config = getattr(settings, "REDIS_CONFIG")
-r = Redis(**config)
-
 class EventConsumer:
-    def __init__(self, handlers:dict) -> None:
-        self._handlers = handlers
-        self._pubsub = r.pubsub(ignore_subscribe_messages=True)            
+    def __init__(self, broker:broker.AbstractBroker, handlers:dict) -> None:
+        self.handlers = handlers
+        self.broker = broker
     
     def _subscribe(self):
-        for channel in self._handlers:
-            self._pubsub.subscribe(channel)
+        for channel in self.handlers:
+            self.broker.subscribe(channel)
     
     def _process_event(self, channel, data):
-        for handler in self._handlers[channel]:
+        for handler in self.handlers[channel]:
             try:
                 logger.debug(f"handling event '{channel}' with handler '{handler}'")
                 handler(data)
@@ -29,5 +25,5 @@ class EventConsumer:
     
     def run(self):
         self._subscribe()
-        for event in self._pubsub.listen():                    
+        for event in self.broker.listen():                    
             self._process_event(event["channel"].decode(), event["data"].decode())

@@ -5,6 +5,7 @@ from .handlers import send_task_notification
 from .topics import Topic
 from .actions import Action
 from .eventconsumer import EventConsumer
+from .adapters.broker import RedisBroker
 from .utils import get_channel_name
 
 logger = logging.getLogger("eventprocessor")
@@ -17,6 +18,6 @@ HANDLERS = {
 
 if __name__ == "__main__":                
     try:
-        EventConsumer(HANDLERS).run()
+        EventConsumer(broker=RedisBroker(), handlers=HANDLERS).run()
     except KeyboardInterrupt: 
         logger.info("exiting...")

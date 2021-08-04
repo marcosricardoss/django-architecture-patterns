@@ -5,7 +5,7 @@ from typing import Optional, Union
 from datetime import datetime
 from dataclasses import asdict
 
-from eventprocessor import EventPublisher
+from eventprocessor import EventPublisher, RedisBroker
 from eventprocessor.utils import get_channel_name
 from eventprocessor.topics import Topic
 from eventprocessor.actions import Action
@@ -54,7 +54,7 @@ def add_task_service(
         # external message processor        
         data = json.dumps(asdict(event), default=dumphandler)
         channel = get_channel_name(Topic.TASK, Action.CREATED)
-        EventPublisher().publish(channel, data)        
+        EventPublisher(broker=RedisBroker()).publish(channel, data)
     
 
 def update_task_service(

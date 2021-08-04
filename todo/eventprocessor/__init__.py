@@ -11,3 +11,4 @@ logger = logging.getLogger("eventprocessor")
 
 from .eventconsumer import EventConsumer
 from .eventpublisher import EventPublisher
+from .adapters.broker import RedisBroker, AbstractBroker
