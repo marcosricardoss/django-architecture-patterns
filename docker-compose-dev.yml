@@ -97,7 +97,7 @@ services:
       REDIS_HOST: project-redis
       REDIS_PORT: 6379
       SECRET_KEY: $SECRET_KEY            
-      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"            
+      STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"                  
     depends_on: [projec-proxy, project-redis]
       
   # TODO APP
@@ -111,9 +111,9 @@ services:
       - '$TODO_SERVICE_SERVICE_PORT:8000'    
     environment:      
       <<: *todo-app-environment
-      SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"      
+      SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       SELENIUM_URL: http://project-selenium:4444
-      TESTER_APP_APP_URL: http://todo-app:8000
+      TESTER_APP_URL: http://todo-app:8000
       VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       VIRTUAL_PORT: 8000
     depends_on: [projec-proxy, project-selenium, todo-app-eventprocessor]
