@@ -32,8 +32,9 @@ def client():
 
 @pytest.fixture
 def browser():
+    SELENIUM_URL = os.environ.get("SELENIUM_URL")
     chrome_options = webdriver.ChromeOptions()
     driver = webdriver.Remote(
-        command_executor=os.environ.get("SELENIUM_URL"), options=chrome_options
+        command_executor=SELENIUM_URL, options=chrome_options
     )
     yield driver

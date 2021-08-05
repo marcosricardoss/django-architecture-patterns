@@ -127,6 +127,7 @@ def test_django_repository_delete_a_object():
 @pytest.mark.django_db
 def test_django_repository_can_retrieve_all_object():
     tasks = DjangoRepository(Task).list()
+    assert len(tasks) == 10
     task = tasks[0]
     assert task.id == 1
     assert task.title == "Task Name 1"
