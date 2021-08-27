@@ -31,8 +31,9 @@ services:
       bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
       /usr/src/app/start-eventprocessor"
     volumes: &todo-app-volumes            
-      - './todo:/usr/src/app'
+      - ./.devcontainer:/usr/src/app/.devcontainer
       - ./.vscode:/usr/src/app/.vscode
+      - ./todo:/usr/src/app
     environment: &todo-app-environment
       DJANGO_USE_DEBUG: 1
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
