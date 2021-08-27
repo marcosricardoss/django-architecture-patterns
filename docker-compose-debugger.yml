@@ -28,12 +28,8 @@ services:
     networks: [todo-debugger]
     restart: always
     command: > 
-      bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
-      /usr/src/app/start-eventprocessor"
-    volumes: &todo-app-volumes            
-      - ./.devcontainer:/usr/src/app/.devcontainer
-      - ./.vscode:/usr/src/app/.vscode
-      - ./todo:/usr/src/app
+      bash -c "/usr/src/app/wait-for-it project-redis:6379 && /usr/src/app/start-eventprocessor"
+    volumes: ['./todo:/usr/src/app']
     environment: &todo-app-environment
       DJANGO_USE_DEBUG: 1
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
@@ -46,12 +42,11 @@ services:
   # TODO APP
   todo-app-debugger:    
     image: 'todo-app:latest'
-    container_name: todo-app-debugger    
-    command: bash -c "/usr/src/app/start"    
+    container_name: todo-app-debugger        
     networks: [todo-debugger]
     ports: ['9999:8000']
     restart: always
-    volumes: *todo-app-volumes
+    volumes: ['.:/usr/src/app'] 
     environment: *todo-app-environment
     depends_on: [todo-app-eventprocessor-debugger]      
 
