@@ -76,9 +76,7 @@ services:
       bash -c "/usr/src/app/wait-for-it todo-postgres:5432 
       && /usr/src/app/wait-for-it project-redis:6379 
       && /usr/src/app/start-eventprocessor"
-    volumes: &todo-app-volumes      
-      - './todo/apps/task:/usr/src/app/task' 
-      - './todo/apps/utils:/usr/src/app/utils'      
+    volumes: &todo-app-volumes            
       - './todo:/usr/src/app'
     environment: &todo-app-environment
       DJANGO_USE_DEBUG: $TODO_DJANGO_USE_DEBUG

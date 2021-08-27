@@ -30,9 +30,7 @@ services:
     command: > 
       bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
       /usr/src/app/start-eventprocessor"
-    volumes: &todo-app-volumes      
-      - './todo/apps/task:/usr/src/app/task' 
-      - './todo/apps/utils:/usr/src/app/utils'      
+    volumes: &todo-app-volumes            
       - './todo:/usr/src/app'
       - ./.vscode:/usr/src/app/.vscode
     environment: &todo-app-environment
