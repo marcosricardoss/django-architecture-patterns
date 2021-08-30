@@ -18,7 +18,7 @@ dev-build:
 	docker-compose -f docker-compose-dev.yml build
 
 dev-up: dev-build
-	docker-compose -f docker-compose-dev.yml up -d
+	docker-compose -f docker-compose-dev.yml up
 
 test: 	
 	docker exec todo-app coverage run -m pytest
