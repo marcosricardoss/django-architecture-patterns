@@ -19,7 +19,7 @@ services:
     ports: ["8081:8081"]
     restart: always
     environment:
-      REDIS_HOSTS: local:project-redis:6379
+      REDIS_HOSTS: local:project-redis-debugger:6379
 
   # TODO EVENT CONSUMER
   todo-app-eventprocessor-debugger:    

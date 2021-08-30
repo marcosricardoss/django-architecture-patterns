@@ -209,7 +209,8 @@ LOGIN_URL="/admin/login/"
 
 # Redis 
 REDIS_CONFIG = {
+    "db": 0,
+    "decode_responses": True,
     "host": os.environ.get("REDIS_HOST"),
     "port": int(os.environ.get("REDIS_PORT")),
-    "db": 0,
 }

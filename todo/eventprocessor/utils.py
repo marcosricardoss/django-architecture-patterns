@@ -1,5 +1,6 @@
-from .topics import Topic
-from .actions import Action
+from datetime import datetime
 
-def get_channel_name(topic:Topic, action:Action):
-    return f"events:{topic.value}_{action.value}"
+def dumphandler(x):  # pragma: no cover
+    if isinstance(x, datetime):
+        return x.isoformat()
+    raise TypeError("Unknown type")    

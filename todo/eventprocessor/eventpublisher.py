@@ -1,13 +1,13 @@
 import logging
 
-from .adapters import broker
+from .adapters import publisher
 
 logger = logging.getLogger("django")
 
 class EventPublisher:        
-    def __init__(self, broker:broker.AbstractBroker) -> None:   
-        self.broker = broker
+    def __init__(self, publisher:publisher.AbstractPublisher) -> None:   
+        self.publisher = publisher
 
-    def publish(self, channel, data):
-        logging.debug(f"publishing: channel={channel}, event={data}")
-        self.broker.publish(channel, data)
+    def publish(self, _topic, _action, _entity) -> None:
+        logging.debug(f"publishing: _topic={_topic}, _action={_action}, data={_entity}", )
+        self.publisher.publish(_topic, _action, _entity)

@@ -5,24 +5,16 @@ from typing import Optional, Union
 from datetime import datetime
 from dataclasses import asdict
 
-from eventprocessor import EventPublisher, RedisBroker
-from eventprocessor.utils import get_channel_name
-from eventprocessor.topics import Topic
-from eventprocessor.actions import Action
 
 from django.db import transaction
 from django.utils import timezone
+
+from eventprocessor import EventPublisher, REDISPublisher
 
 from task.adapters import AbstractRepository
 from .unit_of_work import AbstractUnitOfWork
 from . import messagebus
 from . import events
-
-
-def dumphandler(x):  # pragma: no cover
-    if isinstance(x, datetime):
-        return x.isoformat()
-    raise TypeError("Unknown type")
 
 
 def add_task_service(
@@ -31,8 +23,7 @@ def add_task_service(
     deadline_at: datetime,
     finished_at: Optional[datetime],
     repository: AbstractRepository,
-    uow: Union[AbstractUnitOfWork, transaction.Atomic],
-):
+    uow: Union[AbstractUnitOfWork, transaction.Atomic]):
 
     """Example of using an Unit of Work in a service layer. We could put code
     here that is not directly linked to a domain model, such as accessing an external API.
@@ -49,12 +40,12 @@ def add_task_service(
         event = events.TaskCreated(title, deadline_at)
         
         # message bus
-        messagebus.handle(event)
+        # messagebus.handle(event)
 
         # external message processor        
-        data = json.dumps(asdict(event), default=dumphandler)
-        channel = get_channel_name(Topic.TASK, Action.CREATED)
-        EventPublisher(broker=RedisBroker()).publish(channel, data)
+        data = asdict(event)       
+        publisher = EventPublisher(REDISPublisher())                                
+        publisher.publish("task", "created", data)
     
 
 def update_task_service(

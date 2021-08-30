@@ -1,4 +1,5 @@
 -r base.txt
+black
 coverage
 django-debug-toolbar
 django_coverage_plugin
