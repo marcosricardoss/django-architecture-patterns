@@ -40,7 +40,7 @@ def add_task_service(
         event = events.TaskCreated(title, deadline_at)
         
         # message bus
-        # messagebus.handle(event)
+        messagebus.handle(event)
 
         # external message processor        
         data = asdict(event)       

@@ -16,7 +16,6 @@ class AbstractSubscriber(abc.ABC):  # pragma: no cover
 
 
 class REDISSubscriber(threading.Thread):
-
     """ Redis Subscriber """
 
     def __init__(self, _topic, _action, _handler, _lastid="$") -> None:

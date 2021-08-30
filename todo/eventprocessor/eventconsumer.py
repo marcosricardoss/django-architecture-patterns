@@ -3,15 +3,15 @@ import logging
 import functools
 
 from .adapters.subscriber import AbstractSubscriber
-from .adapters.cache import DomainModel
+from .adapters.cache import AbstractCache
 
 logger = logging.getLogger("eventprocessor")
 
 class EventConsumer:
-    def __init__(self, subscriber:AbstractSubscriber) -> None: 
-        self.subscriber = subscriber
+    def __init__(self, _subscriber:AbstractSubscriber, _cache: AbstractCache) -> None: 
+        self.subscriber = _subscriber
         self.subscribers = {}
-        self.cache = DomainModel()
+        self.cache = _cache
 
     def _entity_created(self, _topic, _item):
         """

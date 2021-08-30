@@ -1,4 +1,7 @@
-from redis import Redis, StrictRedis
+import abc
+import json
+
+from redis import StrictRedis
 from django.conf import settings
 
 def is_key(_value):
@@ -13,9 +16,35 @@ def is_key(_value):
 
 rediscfg = getattr(settings, "REDIS_CONFIG")
 
-class DomainModel(object):
+class AbstractCache(abc.ABC):  # pragma: no cover
+    @abc.abstractmethod
+    def create(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def retrieve(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def find_one(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def find_all(self, *args, **kwargs):
+        raise NotImplementedError
+
+
+class REDISCache(AbstractCache):
     """
-    Domain Model class.
+    Redis Cache class.
     """
     redis = None
 
@@ -119,3 +148,69 @@ class DomainModel(object):
         :return: True iff an entity exists, else False.
         """
         return self.redis.exists('{}_ids'.format(_topic))
+
+    
+    def find_one(self, _topic, _id):
+        """
+        Find an entity for a topic with an specific id.
+
+        :param _topic: The event topic, i.e. name of entity.
+        :param _id: The entity id.
+        :return: A dict with the entity.
+        """
+        return self.find_all(_topic).get(_id)
+    
+    
+    def find_all(self, _topic):
+        """
+        Find all entites for a topic.
+
+        :param _topic: The event topic, i.e name of entity.
+        :return: A dict mapping id -> entity.
+        """
+        def _get_entities(_events):
+            entities = map(lambda x: json.loads(x[1]['entity']), _events)
+            return dict(map(lambda x: (x['id'], x), entities))
+
+        def _remove_deleted(_created, _deleted):
+            for d in _deleted.keys():
+                del _created[d]
+            return _created
+
+        def _set_updated(_created, _updated):
+            for k, v in _updated.items():
+                _created[k] = v
+            return _created
+
+        # read from cache
+        if self.exists(_topic):
+            return self.retrieve(_topic)
+
+        # result is a dict mapping id -> entity
+        result = {}
+
+        # read all events at once
+        with self.redis.pipeline() as pipe:
+            pipe.multi()
+            pipe.xrange('events:{{{0}}}_created'.format(_topic))
+            pipe.xrange('events:{{{0}}}_deleted'.format(_topic))
+            pipe.xrange('events:{{{0}}}_updated'.format(_topic))
+            created_events, deleted_events, updated_events = pipe.execute()
+
+        # get created entities
+        if created_events:
+            result = _get_entities(created_events)
+
+        # remove deleted entities
+        if deleted_events:
+            result = _remove_deleted(result, _get_entities(deleted_events))
+
+        # set updated entities
+        if updated_events:
+            result = _set_updated(result, _get_entities(updated_events))
+
+        # write into cache
+        for value in result.values():
+            self.create(_topic, value)
+
+        return result
