@@ -3,9 +3,8 @@ import logging
 import threading
 
 from redis import StrictRedis
-from django.conf import settings
+from eventprocessor.settings import REDIS_CONFIG
 
-rediscfg = getattr(settings, "REDIS_CONFIG")
 logger = logging.getLogger("eventprocessor")
 
 
@@ -25,7 +24,7 @@ class REDISSubscriber(threading.Thread):
         self.key = "events:{{{0}}}_{1}".format(_topic, _action)
         self.lastid = _lastid
         self.subscribed = True
-        self.redis = StrictRedis(**rediscfg)
+        self.redis = StrictRedis(**REDIS_CONFIG)
 
     def __len__(self):
         return len(self.handlers)

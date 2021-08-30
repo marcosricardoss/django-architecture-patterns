@@ -2,7 +2,7 @@ import abc
 import json
 
 from redis import StrictRedis
-from django.conf import settings
+from eventprocessor.settings import REDIS_CONFIG
 
 def is_key(_value):
     """
@@ -13,8 +13,6 @@ def is_key(_value):
     """
     return '_' in _value and ':' in _value
 
-
-rediscfg = getattr(settings, "REDIS_CONFIG")
 
 class AbstractCache(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
@@ -52,7 +50,7 @@ class REDISCache(AbstractCache):
         """
         :param _redis: A redis instance.
         """
-        self.redis = StrictRedis(**rediscfg)
+        self.redis = StrictRedis(**REDIS_CONFIG)
 
     def create(self, _topic, _values):
         """

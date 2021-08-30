@@ -4,10 +4,8 @@ import uuid
 import json
 
 from redis import StrictRedis
-from django.conf import settings
 from eventprocessor.utils import dumphandler
-
-rediscfg = getattr(settings, "REDIS_CONFIG")     
+from eventprocessor.settings import REDIS_CONFIG
 
 class AbstractPublisher(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
@@ -18,7 +16,7 @@ class REDISPublisher(AbstractPublisher):
     """ Redis Publisher """
 
     def __init__(self) -> None:
-        self.redis = StrictRedis(**rediscfg)
+        self.redis = StrictRedis(**REDIS_CONFIG)
 
     def publish(self, _topic, _action, _entity):
         key = 'events:{{{0}}}_{1}'.format(_topic, _action)        

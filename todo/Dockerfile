@@ -12,3 +12,5 @@ ADD config/requirements ./requirements
 RUN pip install --upgrade pip
 RUN pip install --default-timeout=100 future
 RUN pip install -r requirements/$BUILD_ENV.txt
+
+ENV PYTHONPATH /usr/src/libs

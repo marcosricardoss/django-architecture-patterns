@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 python manage.py migrate
-watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- python -m eventprocessor
+watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- python -m eventbus

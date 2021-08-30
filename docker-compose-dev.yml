@@ -88,6 +88,7 @@ services:
       /usr/src/app/start-eventprocessor"
     volumes: &todo-app-volumes              
       - './todo:/usr/src/app'
+      - './libs:/usr/src/libs'
     environment: &todo-app-environment
       DJANGO_USE_DEBUG: 1
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       

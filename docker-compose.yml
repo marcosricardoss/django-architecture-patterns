@@ -77,6 +77,7 @@ services:
       && /usr/src/app/wait-for-it project-redis:6379 
       && /usr/src/app/start-eventprocessor"
     volumes: &todo-app-volumes            
+      - './libs:/usr/src/libs'
       - './todo:/usr/src/app'
     environment: &todo-app-environment
       DJANGO_USE_DEBUG: $TODO_DJANGO_USE_DEBUG

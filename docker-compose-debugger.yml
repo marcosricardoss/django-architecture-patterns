@@ -23,13 +23,13 @@ services:
 
   # TODO EVENT CONSUMER
   todo-app-eventprocessor-debugger:    
-    image: 'todo-app:latest'
+    image: 'todo-app:latest'    
     container_name: todo-app-eventprocessor-debugger    
     networks: [todo-debugger]
     restart: always
     command: > 
       bash -c "/usr/src/app/wait-for-it project-redis:6379 && /usr/src/app/start-eventprocessor"
-    volumes: ['./todo:/usr/src/app']
+    volumes: ['./libs:/usr/src/libs', './todo:/usr/src/app']
     environment: &todo-app-environment
       DJANGO_USE_DEBUG: 1
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
@@ -44,9 +44,9 @@ services:
     image: 'todo-app:latest'
     container_name: todo-app-debugger        
     networks: [todo-debugger]
-    ports: ['9999:8000']
+    ports: ['$TODO_SERVICE_SERVICE_PORT:8000']    
     restart: always
-    volumes: ['.:/usr/src/app'] 
+    volumes: ['./libs:/usr/src/libs', '.:/usr/src/app'] 
     environment: *todo-app-environment
     depends_on: [todo-app-eventprocessor-debugger]      
 
