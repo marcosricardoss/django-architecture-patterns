@@ -1,6 +1,6 @@
 import logging
 
-logger = logging.getLogger("eventprocessor")
+logger = logging.getLogger("webeventconsumer")
 
 def send_task_notification(data):
     logger.debug(

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+python manage.py migrate
+if [ "$ENV" = "development" ] || [ "$ENV" = "testing" ]
+then  
+  watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- python -m eventbus
+else
+  python -m eventbus
+fi
+

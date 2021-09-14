@@ -85,11 +85,11 @@ services:
     restart: always
     command: > 
       bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
-      /usr/src/app/start-eventprocessor"
-    volumes: &todo-app-volumes              
+      /usr/src/app/start-eventconsumer"
+    volumes: &todo-web-app-volumes              
       - './todo:/usr/src/app'
       - './libs:/usr/src/libs'
-    environment: &todo-app-environment
+    environment: &todo-web-app-environment
       DJANGO_USE_DEBUG: 1
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
       PYTHONUNBUFFERED: 1      
@@ -105,10 +105,10 @@ services:
     image: 'todo-web-app:latest'
     restart: always
     command: /usr/src/app/start
-    volumes: *todo-app-volumes
+    volumes: *todo-web-app-volumes
     ports: ['$TODO_SERVICE_PORT:8000']
     environment:      
-      <<: *todo-app-environment
+      <<: *todo-web-app-environment
       SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       SELENIUM_URL: http://project-selenium:4444
       TESTER_APP_URL: http://todo-app:8000
@@ -116,23 +116,38 @@ services:
       VIRTUAL_PORT: 8000
     depends_on: [projec-proxy, project-selenium, todo-web-event-consumer]
 
+  # TODO API APP EVENT CONSUMER
+  todo-api-event-consumer:
+    image: todo-api-app:latest
+    container_name: todo-api-event-consumer
+    build:
+      context: ./todoapi
+      args: { BUILD_ENV: $ENV }
+    restart: always
+    command: > 
+      bash -c "/usr/src/app/wait-for-it project-redis:6379 && 
+      /usr/src/app/start-eventconsumer"
+    volumes: &todo-api-app-volumes
+      - './todoapi:/usr/src/app'
+      - './libs:/usr/src/libs'
+    environment: &todo-api-app-environment
+      DATABASE_URL: "sqlite:////usr/src/app/db.sqlite"
+      FLASK_APP: app
+      FLASK_ENV: $ENV      
+      SECRET_KEY: $SECRET_KEY            
+      REDIS_HOST: project-redis
+      REDIS_PORT: 6379
+      VIRTUAL_HOST: "${TODO_API_SERVICE_HOST}.${DOMAIN}"
+      VIRTUAL_PORT: "${TODO_API_SERVICE_HOST}"
+    depends_on: [projec-proxy, project-redis]
+
   # TODO API APP
   todo-api-app:
     container_name: todo-api-app
-    restart: always
-    build: ./todoapi
+    restart: always    
     image: todo-api-app:latest    
     command: /usr/src/app/start
     ports: ['$TODO_API_SERVICE_PORT:8000']  
-    depends_on: [projec-proxy]
-    volumes: 
-      - './todoapi:/usr/src/app'
-      - './libs:/usr/src/libs'
-    environment:    
-      DATABASE_URL: "sqlite:////usr/src/app/db.sqlite"
-      FLASK_APP: app
-      FLASK_ENV: $ENV
-      FLASK_PORT: "${TODO_API_SERVICE_PORT}"      
-      SECRET_KEY: $SECRET_KEY            
-      VIRTUAL_HOST: "${TODO_API_SERVICE_HOST}.${DOMAIN}"
-      VIRTUAL_PORT: "${TODO_API_SERVICE_HOST}"
+    depends_on: [projec-proxy, todo-api-event-consumer]
+    volumes: *todo-api-app-volumes
+    environment: *todo-api-app-environment    

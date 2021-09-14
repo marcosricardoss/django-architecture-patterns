@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+flask db upgrade
+if [ "$FLASK_ENV" = "development" ] || [ "$FLASK_ENV" = "testing" ]
+then
+  watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- python -m eventbus
+else
+  python -m eventbus
+fi
