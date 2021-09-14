@@ -65,9 +65,9 @@ services:
     volumes: [./todo/media:/usr/local/apache2/htdocs']
 
   # TODO EVENT CONSUMER
-  todo-app-eventprocessor:    
-    image: 'todo-app:latest'
-    container_name: todo-app-eventprocessor
+  todo-web-event-consumer:    
+    image: 'todo-web-app:latest'
+    container_name: todo-web-event-consumer
     build:
       context: ./todo
       args: { BUILD_ENV: $ENV }
@@ -96,10 +96,10 @@ services:
     depends_on: [projec-proxy, project-redis]
   
   # TODO APP
-  todo-app:
-    ports: ['$TODO_SERVICE_SERVICE_PORT:8000']
-    image: 'todo-app:latest'
-    container_name: todo-app    
+  todo-web-app:
+    ports: ['$TODO_SERVICE_PORT:8000']
+    image: 'todo-web-app:latest'
+    container_name: todo-web-app    
     command: > 
       bash -c "/usr/src/app/wait-for-it todo-postgres:5432 
       && /usr/src/app/wait-for-it project-redis:6379 
@@ -110,7 +110,26 @@ services:
       SITE_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"      
       VIRTUAL_HOST: "${TODO_SERVICE_HOST}.${DOMAIN}"
       VIRTUAL_PORT: 8000   
-    depends_on: [projec-proxy, todo-postgres, todo-app-eventprocessor]    
+    depends_on: [projec-proxy, todo-postgres, todo-web-event-consumer]  
+
+  # TODO API
+  todo-api-app:
+    container_name: todo-api-app
+    restart: always
+    build: ./todoapi
+    image: todo-api-app:latest    
+    command: /usr/src/app/start
+    volumes: ["./todoapi:/usr/src/app"]
+    ports: ['$TODO_API_SERVICE_PORT:8000']  
+    depends_on: [projec-proxy]
+    environment:    
+      DATABASE_URL: "sqlite:////usr/src/db.sqlite"
+      FLASK_APP: app
+      FLASK_ENV: $ENV
+      FLASK_PORT: "${TODO_API_SERVICE_PORT}"      
+      SECRET_KEY: $SECRET_KEY            
+      VIRTUAL_HOST: "${TODO_API_SERVICE_HOST}.${DOMAIN}"
+      VIRTUAL_PORT: "${TODO_API_SERVICE_HOST}"  
   
 volumes:    
   todo:         

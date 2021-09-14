@@ -22,14 +22,16 @@ services:
       REDIS_HOSTS: local:project-redis-debugger:6379
 
   # TODO EVENT CONSUMER
-  todo-app-eventprocessor-debugger:    
-    image: 'todo-app:latest'    
-    container_name: todo-app-eventprocessor-debugger    
+  todo-web-event-consumer-debugger:    
+    image: 'todo-web-app:latest'    
+    container_name: todo-web-event-consumer-debugger
     networks: [todo-debugger]
     restart: always
     command: > 
       bash -c "/usr/src/app/wait-for-it project-redis:6379 && /usr/src/app/start-eventprocessor"
-    volumes: ['./libs:/usr/src/libs', './todo:/usr/src/app']
+    volumes: 
+      - './libs:/usr/src/libs'
+      - './:/usr/src/app'
     environment: &todo-app-environment
       DJANGO_USE_DEBUG: 1
       MEDIA_HOST: "${TODO_SERVICE_MEDIA_HOST}.${DOMAIN}"       
@@ -40,15 +42,39 @@ services:
       STATIC_HOST: "${TODO_SERVICE_STATIC_HOST}.${DOMAIN}"                
 
   # TODO APP
-  todo-app-debugger:    
-    image: 'todo-app:latest'
-    container_name: todo-app-debugger        
-    networks: [todo-debugger]
-    ports: ['$TODO_SERVICE_SERVICE_PORT:8000']    
-    restart: always
+  todo-web-app-debugger:    
     volumes: ['./libs:/usr/src/libs', '.:/usr/src/app'] 
+    restart: always
+    ports: ['$TODO_SERVICE_PORT:8000']    
+    networks: [todo-debugger]
+    image: 'todo-app:latest'
     environment: *todo-app-environment
-    depends_on: [todo-app-eventprocessor-debugger]      
+    depends_on: [todo-web-event-consumer-debugger]
+    container_name: todo-web-app-debugger
+    working_dir: /usr/src/app/todo
+    command: /usr/src/app/todo/start
+
+  # TODO API
+  todo-api-app-debugger:
+    container_name: todo-api-app-debugger
+    restart: always
+    build: ./todoapi
+    image: todo-api-app:latest        
+    ports: ['$TODO_API_SERVICE_PORT:8000']  
+    depends_on: []
+    working_dir: /usr/src/app/todoapi
+    command: /usr/src/app/todoapi/start
+    volumes: 
+      - './:/usr/src/app'
+      - './libs:/usr/src/libs'
+    environment:    
+      DATABASE_URL: "sqlite:////usr/src/app/todoapi/db.sqlite"
+      FLASK_APP: app
+      FLASK_ENV: $ENV
+      FLASK_PORT: "${TODO_API_SERVICE_PORT}"      
+      SECRET_KEY: $SECRET_KEY            
+      VIRTUAL_HOST: "${TODO_API_SERVICE_HOST}.${DOMAIN}"
+      VIRTUAL_PORT: "${TODO_API_SERVICE_HOST}"
 
 networks:      
   todo-debugger:      
