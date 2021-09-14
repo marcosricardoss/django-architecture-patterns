@@ -21,14 +21,14 @@ dev-up: dev-build
 	docker-compose -f docker-compose-dev.yml up
 
 test: 	
-	docker exec todo-app coverage run -m pytest
-	docker exec todo-app coverage html	
+	docker exec todo-web-app coverage run -m pytest
+	docker exec todo-web-app coverage html	
 
 logs:
 	docker-compose logs -f
 
 logs-tail-100:
-	docker-compose logs todo-app | tail -100	
+	docker-compose logs todo-web-app | tail -100	
 
 black:
 	black -l 86 $$(find * -name '*.py')
