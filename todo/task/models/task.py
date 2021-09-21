@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -15,7 +17,8 @@ class Task(CreationModificationDateMixin):
         ordering = ["created_at"]
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
-
+    
+    public_id = models.UUIDField(default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
     deadline_at = models.DateTimeField(
@@ -27,6 +30,7 @@ class Task(CreationModificationDateMixin):
         help_text=mark_safe(
             "<small>Can be added by the Django administration panel</small>"
         ),
+        null=True,
         blank=True,
     )
 

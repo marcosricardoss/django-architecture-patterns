@@ -8,8 +8,11 @@ class Event:
 
 @dataclass
 class TaskCreated(Event):
+    public_id: str
     title: str    
+    description: str
     deadline_at: datetime
+    finished_at: datetime
 
 @dataclass
 class TaskUpdated(Event):

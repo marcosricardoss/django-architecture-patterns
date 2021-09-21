@@ -36,8 +36,8 @@ def add_task_service(
         "finished_at": finished_at
     }
     with uow:
-        repository.create(data = defaults)
-        event = events.TaskCreated(title, deadline_at)
+        task = repository.create(data = defaults)
+        event = events.TaskCreated(task.public_id, title, description, deadline_at, finished_at)
         
         # message bus
         messagebus.handle(event)
