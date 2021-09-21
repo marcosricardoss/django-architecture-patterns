@@ -8,15 +8,19 @@ from app.database import db_session as session
 logger = logging.getLogger("apieventconsumer")
 
 def task_created_handler(data):    
+
     entity = json.loads(data['entity'])    
     
-    task = Task()
-    task.public_id = uuid.uuid1().hex
-    task.title = entity["title"]
-    task.deadline_at = parser.parse(entity["deadline_at"])
-    task.created_at = parser.parse(entity["deadline_at"])
+    if not session.query(Task).filter_by(public_id=entity["public_id"]).first():
+        task = Task()
+        task.public_id = entity["public_id"]
+        task.title = entity["title"]
+        task.description = entity["description"]
+        task.deadline_at = parser.parse(entity["deadline_at"])
+        task.finished_at = parser.parse(entity["finished_at"]) if entity["finished_at"] else None        
+        session.add(task)
+        session.commit()
 
-    session.add(task)
-    session.commit()
-
-    logger.debug("task created: " + str(entity))
+        logger.debug("task created: " + str(entity))
+    else:
+        logger.debug("this task has already been added before: " + str(entity))
